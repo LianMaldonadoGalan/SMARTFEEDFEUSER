@@ -1,20 +1,24 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { createAppContainer, createSwitchNavigator } from "react-navigation";
+import { createStackNavigator } from "react-navigation-stack";
+import SigninScreen from "./src/screens/SiginScreen";
+import SignupScreen from "./src/screens/SignupScreen";
 
-export default function App() {
+const switchNavigator = createSwitchNavigator({
+  loginFlow: createStackNavigator({
+    Signin: SigninScreen,
+    Signup: SignupScreen
+  },{
+    initialRouteName: 'Signup',
+  })
+})
+
+const App = createAppContainer(switchNavigator);
+
+export default () => {
   return (
-    <View style={styles.container}>
-      <Text>Holi!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <App>
+
+    </App>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
