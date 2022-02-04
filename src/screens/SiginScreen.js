@@ -1,20 +1,18 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import { Text } from "react-native-elements";
+import { Text, Button } from "react-native-elements";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const SigninScreen = () => {
+const SigninScreen = ({ navigation }) => {
     return (
         <SafeAreaView>
             <Text h3>Signin Screen</Text>
+            <Button
+                title='Ir a Signup'
+                onPress={() => navigation.push('Signup')}
+            />
         </SafeAreaView>
     );
-};
-
-SigninScreen.navigationOptions = () => {
-    return{
-        headerShown: false,
-    };
 };
 
 const styles = StyleSheet.create({
