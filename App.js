@@ -3,6 +3,8 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
+
+import CustomDrawer from './components/CustomDrawer';
 import SigninScreen from "./src/screens/SiginScreen";
 import SignupScreen from "./src/screens/SignupScreen";
 import AccountScreen from "./src/screens/AccountScreen";
@@ -11,7 +13,7 @@ import MainScreen from "./src/screens/MainScreen";
 import MealsScreen from "./src/screens/MealsScreen";
 import ShoppingList from './src/screens/ShoppingList';
 import RecipeScreen from './src/screens/RecipeScreen';
-
+import IonIcons from 'react-native-vector-icons/Ionicons';
 
 const Stack = createStackNavigator();
 
@@ -24,13 +26,31 @@ export default function App() {
   return (
     <NavigationContainer>
       {isLoggedIn ? (
-        <Drawer.Navigator screenOptions={{ drawerPosition: "right" }}>
-          <Drawer.Screen name="Main" component={MainScreen} />
-          <Drawer.Screen name="Account" component={AccountScreen} />
-          <Drawer.Screen name="Health" component={HealthData} />
-          <Drawer.Screen name="Meals" component={MealsScreen} />
-          <Drawer.Screen name="Shopping" component={ShoppingList} />
-          <Drawer.Screen name="Recipe" component={RecipeScreen} />
+        <Drawer.Navigator 
+       drawerContent={props=> <CustomDrawer {...props}/>}
+        screenOptions={{ 
+          drawerActiveBackgroundColor: '#EFCA66',
+          drawerLabelStyle: { color: '#60656C', marginLeft: -20},
+        }}>
+          
+          <Drawer.Screen name="Main" component={MainScreen} options= {{
+            drawerIcon:config => <IonIcons name="home" size={30} color='#60656C'/>
+          }}/>
+          <Drawer.Screen name="Account" component={AccountScreen} options= {{
+            drawerIcon:config => <IonIcons name="person" size={30} color='#60656C'/>
+          }} />
+          <Drawer.Screen name="Health" component={HealthData} options= {{
+            drawerIcon:config => <IonIcons name="heart-sharp" size={30} color='#60656C'/>
+          }}/>
+          <Drawer.Screen name="Meals" component={MealsScreen} options= {{
+            drawerIcon:config => <IonIcons name="restaurant-sharp" size={30} color='#60656C'/>
+          }} />
+          <Drawer.Screen name="Shopping" component={ShoppingList} options= {{
+            drawerIcon:config => <IonIcons name="cart" size={30} color='#60656C'/>
+          }}/>
+          <Drawer.Screen name="Recipe" component={RecipeScreen} options= {{
+            drawerIcon:config => <IonIcons name="book-sharp" size={30} color='#60656C'/>
+          }}/>
         </Drawer.Navigator>
       ) : (
         <Stack.Navigator>
