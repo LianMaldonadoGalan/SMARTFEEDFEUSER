@@ -3,7 +3,7 @@ import { StyleSheet,View, TouchableOpacity } from "react-native";
 import { Text, Button, Input } from "react-native-elements";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const SigninScreen = ({ navigation }) => {
+const SignupScreen = ({ navigation }) => {
 
     const [hidePass1, setHidePass1] = useState(true);
     const [hidePass2, setHidePass2] = useState(true);
@@ -103,4 +103,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default SigninScreen;
+export default SignupScreen;
