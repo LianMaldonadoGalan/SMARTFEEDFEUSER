@@ -1,16 +1,13 @@
-import React, {useState} from "react";
-import { StyleSheet,ScrollView, View, Image, Dimensions } from "react-native";
-import { Text } from "react-native-elements";
+import React, {useState} from 'react';
+import {View, Text, Image, Dimensions, StyleSheet,ScrollView} from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
-import Spacer from '../../components/Spacer';
+import Spacer from './Spacer';
 
-
-//Conseguir dimensiones del dispositivo
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-const RecipeScreen = () => {
+const MealInfo = () => {
 
     //Imagenes
 
@@ -80,33 +77,8 @@ const RecipeScreen = () => {
                         irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla 
                         pariatur
                     </Text>
-                </Spacer>
+                </Spacer>                
 
-                <Spacer>
-                    <Text style={styles.text}>Ingredientes:</Text>
-                </Spacer>
-                
-
-                <Spacer>
-                    <Text style={styles.text}>- Mole {'\n'}
-                        - Pollo {'\n'}
-                        - Tostadas 
-                    </Text>
-                </Spacer>
-                
-
-                <Spacer>
-                    <Text style={styles.text}>Preparacion:</Text>
-                </Spacer>
-                
-                <Spacer>
-                    <Text style={styles.text}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
-                        incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
-                        exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute 
-                        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla 
-                        pariatur
-                    </Text>
-                </Spacer>
                 <Spacer/>
                 <Spacer >
                     
@@ -135,12 +107,14 @@ const RecipeScreen = () => {
             </ScrollView>
         </SafeAreaView>
     );
-};
+}
 
-//Hoja de estilos
+
 const styles = StyleSheet.create({
     container:{
-        flex: 1
+        flex: 1,
+        borderBottomColor: '#60656C',
+        borderBottomWidth: 1
     },
     imgwrap:{
         height: screenHeight * 0.30,
@@ -175,4 +149,5 @@ const styles = StyleSheet.create({
     }
 });
 
-export default RecipeScreen;
+
+export default MealInfo;

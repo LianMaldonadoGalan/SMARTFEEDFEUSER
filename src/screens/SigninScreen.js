@@ -1,59 +1,93 @@
 import React, {useState} from "react";
-import { StyleSheet, Image, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Image, View, TouchableOpacity, 
+         KeyboardAvoidingView, Platform, TouchableWithoutFeedback, 
+         Keyboard, ScrollView } from "react-native";
 import { Text, Button, Input } from "react-native-elements";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const SigninScreen = ({ navigation }) => {
 
+    //State para ocultar la contraseña
     const [hidePass1, setHidePass1] = useState(true);
 
     return (
-        <SafeAreaView style={{paddingHorizontal: 15}}>
-            <Image source={require('../../assets/images/logo.png')} style={styles.imagestyle}/>
-            <Text style={styles.header}>Inciar Sesión</Text>
 
-            <Input
-            placeholder= "Correo"
-            autoCapitalize= "none"
-            autoCorrect={false}
-            label="Correo" 
-            labelStyle={styles.label}
-            leftIcon={{ type: 'IonIcons', name: 'mail' , color: '#60656C'}}
-            //value={} 
-            //onChangeText={}
-            />
+        <KeyboardAvoidingView 
+         behavior={Platform.OS === 'android' ? 'padding' : 'null'}
+         keyboardVerticalOffset = {-500}
+         style={styles.container}
+        >
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <ScrollView>
+                    <SafeAreaView style={{paddingHorizontal: 15}}>
 
-            <Input
-            placeholder= "****"
-            autoCapitalize= "none"
-            autoCorrect={false}
-            secureTextEntry={hidePass1 ? true : false}
-            label="Contraseña" 
-            labelStyle={styles.label}
-            leftIcon={{ type: 'IonIcons', name: 'lock' , color: '#60656C'}}
-            rightIcon={{ type: 'font-awesome', name: 'eye' , color: '#60656C', onPress:() => setHidePass1(!setHidePass1)}}
-            //onChangeText={}
-            />
+                        {/* LOGO */}
+                        <Image source={require('../../assets/images/logo.png')} style={styles.imagestyle}/>
 
-            <Button
-                title='Iniciar Sesion'
-                onPress={() => navigation.push('Signin')}
-                titleStyle={{color:'#FFFFFF'}}
-                buttonStyle={styles.submitButton}
-            />
+                        {/* HEADER */}
+                        <Text style={styles.header}>Inciar Sesión</Text>
 
-            <View style={styles.questionContainer}>
-            <Text style={styles.question}>¿Aún no tienes cuenta?</Text>
-            <TouchableOpacity onPress={() => navigation.push('Signin')}>
-            <Text style={styles.link}>Registrarme</Text>
-            </TouchableOpacity>
-            </View>
-        </SafeAreaView>
+
+                        {/* EMAIL INPUT */}    
+                        <Input
+                        placeholder= "Correo"
+                        autoCapitalize= "none"
+                        autoCorrect={false}
+                        label="Correo" 
+                        labelStyle={styles.label}
+                        leftIcon={{ type: 'IonIcons', name: 'mail' , color: '#60656C'}}
+                        //value={} 
+                        //onChangeText={}
+                        />
+
+
+                        {/* PASSWORD INPUT */}
+                        <Input
+                        placeholder= "****"
+                        autoCapitalize= "none"
+                        autoCorrect={false}
+                        secureTextEntry={hidePass1 ? true : false}
+                        label="Contraseña" 
+                        labelStyle={styles.label}
+                        leftIcon={{ type: 'IonIcons', name: 'lock' , color: '#60656C'}}
+                        rightIcon={{ type: 'font-awesome', size: 30, 
+                        name: hidePass1 ?  'eye' : 'eye-slash',
+                        color: '#60656C', onPress:() => setHidePass1(!hidePass1)}}
+                        //onChangeText={}
+                        />
+
+
+                        {/* BOTON INICIAR SESION */}
+                        <Button
+                            title='Iniciar Sesion'
+                            onPress={() => navigation.push('Signup')}
+                            titleStyle={{color:'#FFFFFF'}}
+                            buttonStyle={styles.submitButton}
+                        />
+
+
+                        {/* LINK Y PREGUNTA */}
+                        <View style={styles.questionContainer}>
+                        <Text style={styles.question}>¿Aún no tienes cuenta?</Text>
+                        <TouchableOpacity onPress={() => navigation.push('Signup')}>
+                        <Text style={styles.link}>Registrarme</Text>
+                        </TouchableOpacity>
+
+                        </View>
+
+                    </SafeAreaView>
+                </ScrollView>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
     );
+
 };
 
-
+//HOJA DE ESTILOS
 const styles = StyleSheet.create({
+    container:{
+        flex: 1
+    },
     header:{
         alignSelf: "center",
         marginTop: 10,
