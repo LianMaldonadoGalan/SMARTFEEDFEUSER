@@ -1,17 +1,27 @@
-import React, {useState} from "react";
+import React, {useState, useContext} from "react";
 import { StyleSheet, Image, View, TouchableOpacity, 
          KeyboardAvoidingView, Platform, TouchableWithoutFeedback, 
          Keyboard, ScrollView } from "react-native";
 import { Text, Button, Input } from "react-native-elements";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Context as AuthContext } from '../context/AuthContext';
 
 const SigninScreen = ({ navigation }) => {
+
+    const {state, signin, clearErrorMessage } = useContext(AuthContext);
 
     //State para ocultar la contraseña
     const [hidePass1, setHidePass1] = useState(true);
 
-    return (
+    const [email, setEmail] = useState('');
+    const [passwd, setPassword] = useState('');
 
+    navigation.addListener('blur', () => {
+        clearErrorMessage();
+      });
+
+    return (
+        
         <KeyboardAvoidingView 
          behavior={Platform.OS === 'android' ? 'padding' : 'null'}
          keyboardVerticalOffset = {-500}
@@ -20,6 +30,8 @@ const SigninScreen = ({ navigation }) => {
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <ScrollView>
                     <SafeAreaView style={{paddingHorizontal: 15}}>
+                        
+                    
 
                         {/* LOGO */}
                         <Image source={require('../../assets/images/logo.png')} style={styles.imagestyle}/>
@@ -36,8 +48,8 @@ const SigninScreen = ({ navigation }) => {
                         label="Correo" 
                         labelStyle={styles.label}
                         leftIcon={{ type: 'IonIcons', name: 'mail' , color: '#60656C'}}
-                        //value={} 
-                        //onChangeText={}
+                        value={email} 
+                        onChangeText={setEmail}
                         />
 
 
@@ -53,16 +65,19 @@ const SigninScreen = ({ navigation }) => {
                         rightIcon={{ type: 'font-awesome', size: 30, 
                         name: hidePass1 ?  'eye' : 'eye-slash',
                         color: '#60656C', onPress:() => setHidePass1(!hidePass1)}}
-                        //onChangeText={}
+                        value={passwd}
+                        onChangeText={setPassword}
                         />
 
+                        {state.errorMessage ? <Text style= {styles.errorMessage}>{state.errorMessage}</Text> : null}
 
                         {/* BOTON INICIAR SESION */}
                         <Button
                             title='Iniciar Sesion'
                             onPress={() => navigation.push('Signup')}
-                            titleStyle={{color:'#FFFFFF'}}
+                            titleStyle={{color:'#FFFFFF', fontSize: 18}}
                             buttonStyle={styles.submitButton}
+                            onPress={() => signin({email,passwd})}
                         />
 
 
@@ -123,7 +138,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
     submitButton:{
-        marginTop: 30,
+        marginTop: 40,
         backgroundColor: '#D7B55B',
         borderRadius: 10,
         padding: 25,
@@ -133,8 +148,14 @@ const styles = StyleSheet.create({
     questionContainer:{
         flexDirection:"row", 
         justifyContent: "space-evenly",
-        marginTop: 50
-    }
+        marginTop: 30
+    },
+    errorMessage:{
+        color: 'red',
+        fontSize: 16,
+        marginLeft: 10,
+        marginTop: 15
+    },
 });
 
 export default SigninScreen;

@@ -1,15 +1,26 @@
-import React, {useState} from "react";
+import React, {useState, useContext} from "react";
 import { StyleSheet,View, TouchableOpacity, 
          KeyboardAvoidingView, Platform, TouchableWithoutFeedback, 
          Keyboard, ScrollView } from "react-native";
 import { Text, Button, Input } from "react-native-elements";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Context as AuthContext2 } from '../context/AuthContext';
 
 const SignupScreen = ({ navigation }) => {
+
+    const {state, signup, clearErrorMessage } = useContext(AuthContext2);
 
     //STATES para ocultar contraseña
     const [hidePass1, setHidePass1] = useState(true);
     const [hidePass2, setHidePass2] = useState(true);
+
+    const [email, setEmail] = useState('');
+    const [passwd, setPassword] = useState('');
+    const [confirmpw, setConfirmpw] = useState('');
+
+    navigation.addListener('blur', () => {
+        clearErrorMessage();
+    });
 
     return (
 
@@ -21,6 +32,7 @@ const SignupScreen = ({ navigation }) => {
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <ScrollView>
                     <SafeAreaView>
+
 
                         {/* HEADER */}
                         <Text style={styles.header}>Registrarse</Text>
@@ -34,8 +46,8 @@ const SignupScreen = ({ navigation }) => {
                         label="Correo" 
                         labelStyle={styles.label}
                         leftIcon={{ type: 'IonIcons', name: 'mail' , color: '#60656C'}}
-                        //value={} 
-                        //onChangeText={}
+                        value={email} 
+                        onChangeText={setEmail}
                         />
 
 
@@ -51,7 +63,8 @@ const SignupScreen = ({ navigation }) => {
                         rightIcon={{ type: 'font-awesome', size: 30,  
                         name: hidePass1 ?  'eye' : 'eye-slash', 
                         color: '#60656C', onPress: () => setHidePass1(!hidePass1)}}
-                        //onChangeText={}
+                        value={passwd}
+                        onChangeText={setPassword}
                         />
 
 
@@ -66,20 +79,23 @@ const SignupScreen = ({ navigation }) => {
                         leftIcon={{ type: 'IonIcons', name: 'lock' , color: '#60656C'}}
                         rightIcon={{ type: 'font-awesome', size: 30,
                         name: hidePass2 ?  'eye' : 'eye-slash',
-                        color: '#60656C', onPress: () => setHidePass2(!hidePass2)
-                        }}
-                        //onChangeText={}
+                        color: '#60656C', onPress: () => setHidePass2(!hidePass2)}}
+                        value={confirmpw}
+                        onChangeText={setConfirmpw}
                         />
+
+                        {state.errorMessage ? <Text style= {styles.errorMessage}>{state.errorMessage}</Text> : null}
+                        
                         </View>
 
                         {/* BOTON REGISTRARSE */}
                         <Button
                             title='Registrarme'
                             onPress={() => navigation.push('Signin')}
-                            titleStyle={{color:'#FFFFFF'}}
+                            titleStyle={{color:'#FFFFFF', fontSize: 18}}
                             buttonStyle={styles.submitButton}
+                            onPress={() => signup({email,passwd,confirmpw})}
                         />
-
 
                         {/* LINK Y PREGUNTA */}
                         <View style={{flexDirection:"row", justifyContent: "space-evenly"}}>
@@ -125,13 +141,19 @@ const styles = StyleSheet.create({
         fontSize: 20,
     },
     submitButton:{
-        marginTop: 50,
+        marginTop: 45,
         backgroundColor: '#D7B55B',
         borderRadius: 10,
         padding: 25,
         alignSelf: "center",
         width: 350
-    }
+    },
+    errorMessage:{
+        color: 'red',
+        fontSize: 16,
+        marginLeft: 10,
+        marginTop: 15
+    },
 });
 
 export default SignupScreen;
