@@ -1,9 +1,13 @@
-import React from "react";
+import React,{useContext} from "react";
 import {Text,View,Image,StyleSheet} from 'react-native';
 import { DrawerContentScrollView,DrawerItemList,DrawerItem } from "@react-navigation/drawer";
 import IonIcons from 'react-native-vector-icons/Ionicons';
+import {Context as AuthContext} from '../src/context/AuthContext';
 
 const CustomDrawer = (props) => {
+
+    const {signout} = useContext(AuthContext);
+
     return (
         <View style={{flex:1}}>
             <DrawerContentScrollView {...props}>
@@ -15,7 +19,7 @@ const CustomDrawer = (props) => {
                 icon={() => <IonIcons name="close-circle" size={35} color='#60656C'/>}
                 style={{marginTop: 140, borderTopWidth: 1, borderColor:'#60656C' }}
                 labelStyle= {{marginLeft: -25}}
-                //onPress
+                onPress={signout}
                 />
             </DrawerContentScrollView>
         </View>
