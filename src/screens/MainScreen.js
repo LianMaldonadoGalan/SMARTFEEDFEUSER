@@ -5,7 +5,12 @@ import Carousel from 'react-native-snap-carousel';
 import { SafeAreaView } from "react-native-safe-area-context";
 
 
+
+
+
 const MainScreen = () => {
+
+    
 
         const state = {
           activeIndex:0,
