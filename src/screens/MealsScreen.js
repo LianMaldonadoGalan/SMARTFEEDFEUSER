@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useContext} from "react";
 import { StyleSheet, Text, View, 
     KeyboardAvoidingView, Platform, TouchableWithoutFeedback, 
     Keyboard, ScrollView, TextInput } from "react-native";
@@ -6,8 +6,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather } from '@expo/vector-icons';
 import { FontAwesome} from '@expo/vector-icons';
 import MealInfo from "../../components/MealInfo";
+import { Context as AuthContext } from '../context/AuthContext';
+
 
 const MealsScreen = () => {
+
+    const {state} = useContext(AuthContext);
+
+    //console.log(state.userdata.id_user);
+
     return (
         <KeyboardAvoidingView 
          behavior={Platform.OS === 'android' ? 'padding' : 'null'}

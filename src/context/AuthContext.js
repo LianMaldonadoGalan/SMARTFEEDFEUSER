@@ -26,8 +26,11 @@ const AuthReducer = (state, action) => {
         case 'signin':
             return { token: action.payload};
 
+        case 'save_user_data':
+            return {...state, userdata: action.payload};
+
         case 'sign_out':
-            return {token: null, errorMessage: ''};
+            return {token: null, userdata: null, errorMessage: ''};
 
         default:
             return state;
@@ -42,9 +45,14 @@ const tryLocalSignin = (dispatch) => {
     const navigation = useNavigation();
     return async () => {
     const token = await AsyncStorage.getItem('token');
+    let userdata = await AsyncStorage.getItem('userData');
+
+    userdata = JSON.parse(userdata);
+    
 
     if(token){
         dispatch({ type: 'signin', payload: token});
+        dispatch({ type: 'save_user_data', payload: userdata});
 
         navigation.navigate('Root');
     }else{
@@ -81,7 +89,9 @@ const signup = (dispatch) => {
         try {
             const response = await smartFeedApi.post('/users/register', {email, passwd: pass});
             await AsyncStorage.setItem('token', response.token);
+            await AsyncStorage.setItem('userData', JSON.stringify(response.data.data));
             dispatch({ type: 'signin', payload: response.data});
+            dispatch({ type: 'save_user_data', payload: response.data.data});
 
             navigation.navigate('Root');
             //navigation.navigate('Root', { screen: 'Meals' });
@@ -108,8 +118,11 @@ const signin = (dispatch) => {
         try {
             const response = await smartFeedApi.post('/users/login', {email, passwd: pass} );
             await AsyncStorage.setItem('token', response.data.token);
-            dispatch({ type: 'signin', payload: response.data});
-
+            await AsyncStorage.setItem('userData', JSON.stringify(response.data.data));
+            dispatch({ type: 'signin', payload: response.data.token});
+            dispatch({ type: 'save_user_data', payload: response.data.data});
+            
+            
             navigation.navigate('Root');
             //navigation.navigate('Root', { screen: 'Meals' });
         } catch (error) {
@@ -123,10 +136,11 @@ const signout = (dispatch) =>  {
     const navigation = useNavigation();
     return async () => {
         await AsyncStorage.removeItem('token');
+        await AsyncStorage.removeItem('userData');
         dispatch({ type: 'sign_out'});
 
         navigation.navigate('Signin');
     }
  };
 
-export const {Context, Provider } = createDataContext(AuthReducer, {signin, signout, signup, clearErrorMessage, tryLocalSignin}, {token: null, errorMessage: ''});
+export const {Context, Provider } = createDataContext(AuthReducer, {signin, signout, signup, clearErrorMessage, tryLocalSignin}, {userdata: null, token: null, errorMessage: ''});
