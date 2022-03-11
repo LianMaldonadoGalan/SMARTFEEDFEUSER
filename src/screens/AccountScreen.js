@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import { StyleSheet, Image, Text, View, 
     KeyboardAvoidingView, Platform, TouchableWithoutFeedback, 
     Keyboard, ScrollView } from "react-native";
@@ -6,13 +6,15 @@ import { Input } from "react-native-elements";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Spacer from '../../components/Spacer';
 import { Picker } from "@react-native-picker/picker";
+import { Context as UserDataContext } from "../context/UserDataContext";
 
 const AccountScreen = ({navigation}) => {
+    const { state: stateUserData } = useContext(UserDataContext);
 
     const [editName, setEditName] = useState(false);
-    const [name, setName] = useState('John Doe Washington');
+    const [name, setName] = useState(stateUserData.name);
 
-    const [sex, setSex] = useState(null);
+    const [sex, setSex] = useState(stateUserData.sex);
 
     const [editAge, setEditAge] = useState(false);
     const [age, setAge] = useState('45');
@@ -26,21 +28,21 @@ const AccountScreen = ({navigation}) => {
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <ScrollView>
                     <SafeAreaView>
-                        <Image source={require('../../assets/images/photo.png')} style={styles.imagestyle}/>
+                        <Image source={{uri: stateUserData.profile_picture}} style={styles.imagestyle}/>
                         
                         <Spacer>
                         <Input
-                        disabled = {editName ? false : true}
-                        value={name}
-                        onChangeText={(name) => setName(name)}
-                        autoCapitalize= "none"
-                        autoCorrect={false}
-                        editable = {editName ? true : false}
-                        label="Nombre" 
-                        labelStyle={styles.label}
-                        rightIcon={{ type: 'font-awesome', size: 30, name: 'pencil' , color: '#60656C', onPress:() => setEditName(true)}}
-                        blurOnSubmit={false}
-                        //onChangeText={}
+                            disabled = {editName ? false : true}
+                            value={name}
+                            onChangeText={(name) => setName(name)}
+                            autoCapitalize= "none"
+                            autoCorrect={false}
+                            editable = {editName ? true : false}
+                            label="Nombre" 
+                            labelStyle={styles.label}
+                            rightIcon={{ type: 'font-awesome', size: 30, name: 'pencil' , color: '#60656C', onPress:() => setEditName(true)}}
+                            blurOnSubmit={false}
+                            //onChangeText={}
                         />
                         </Spacer>
 
@@ -60,16 +62,16 @@ const AccountScreen = ({navigation}) => {
                     
                         <Spacer>
                         <Input
-                        disabled = {editAge? false : true}
-                        value={age}
-                        onChangeText={(age) => setAge(age)}
-                        editable = {editAge ? true : false}
-                        label="Edad" 
-                        labelStyle={styles.label}
-                        rightIcon={{ type: 'font-awesome', size: 30, name: 'pencil' , color: '#60656C', onPress:() => setEditAge(true)}}
-                        blurOnSubmit={false}
-                        keyboardType='numeric'
-                        //onChangeText={}
+                            disabled = {editAge? false : true}
+                            value={age}
+                            onChangeText={(age) => setAge(age)}
+                            editable = {editAge ? true : false}
+                            label="Edad" 
+                            labelStyle={styles.label}
+                            rightIcon={{ type: 'font-awesome', size: 30, name: 'pencil' , color: '#60656C', onPress:() => setEditAge(true)}}
+                            blurOnSubmit={false}
+                            keyboardType='numeric'
+                            //onChangeText={}
                         />
                         </Spacer>
 
