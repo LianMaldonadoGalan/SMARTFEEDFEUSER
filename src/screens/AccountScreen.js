@@ -8,10 +8,9 @@ import Spacer from '../../components/Spacer';
 import { Picker } from "@react-native-picker/picker";
 import { Context as UserDataContext } from "../context/UserDataContext";
 import DataTimePicker from '@react-native-community/datetimepicker';
-import moment from "moment";
 
 const AccountScreen = ({navigation}) => {
-    const { state: stateUserData } = useContext(UserDataContext);
+    const { state: stateUserData, updateUserData } = useContext(UserDataContext);
     
     const [editName, setEditName] = useState(false);
     const [name, setName] = useState(stateUserData.name);
@@ -23,6 +22,8 @@ const AccountScreen = ({navigation}) => {
 
     const [date, setDate] = useState('1998-12-07');
     const [show, setShow] = useState(false);
+
+    const [birth, setBirth] = useState(null);
 
     //Setear la edad por primera vez
     useEffect(() => {    
@@ -40,12 +41,15 @@ const AccountScreen = ({navigation}) => {
             const fechaAct = new Date();
             const fechaNac = selectedDate;
             const edad = fechaAct - fechaNac;
+            const aux = new Date(fechaNac);
             
             //Math.floor(edad/(1000*60*60*24*365)-.015) Es para convertir la diferencia de fechas en años. El -.015 es una pequeña validación.
             console.log('Edad  ' + Math.floor(edad/(1000*60*60*24*365)-.015));
             setAge(String(Math.floor(edad/(1000*60*60*24*365)-.015)));
             console.log(stateUserData.birth_date);
             setDate(fechaNac);
+            setBirth(aux.toISOString())
+            //console.log("birth  " + birth);
         }
         setShow(false);
     }
@@ -106,9 +110,12 @@ const AccountScreen = ({navigation}) => {
                         />
                         </Spacer>
 
-                        <View>
-                            <Button onPress={() => setShow(true)} title='Modificar fecha de nacimiento'></Button>
-                        </View>
+                        <Spacer>
+                            <View>
+                                <Button onPress={() => setShow(true)} title='Modificar fecha de nacimiento'></Button>
+                            </View>
+                        </Spacer>
+                        
                         {show && (
                             <DataTimePicker
                                 value={date}
@@ -116,6 +123,13 @@ const AccountScreen = ({navigation}) => {
                                 onChange={onChange}
                             />
                         )}
+
+                        <Button 
+                            onPress={() => updateUserData(stateUserData.id_user, name, sex, birth)} 
+                            title='Confirmar'
+                            titleStyle={{color:'#FFFFFF'}}
+                            buttonStyle={styles.submitButton}
+                        />
 
                     </SafeAreaView>
                 </ScrollView>
@@ -160,6 +174,15 @@ const styles = StyleSheet.create({
         marginHorizontal: 14,
         
     },
+    submitButton:{
+        marginTop: 50,
+        backgroundColor: '#2fa822',
+        borderRadius: 10,
+        padding: 25,
+        alignSelf: "center",
+        width: 350,
+        marginBottom: 50
+    }
    
 });
 

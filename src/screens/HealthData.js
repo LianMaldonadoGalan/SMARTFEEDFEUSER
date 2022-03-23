@@ -9,7 +9,7 @@ import { Picker } from "@react-native-picker/picker";
 import { Context as UserDataContext } from "../context/UserDataContext";
 
 const HealthData = () => {
-    const { state: stateUserData } = useContext(UserDataContext);
+    const { state: stateUserData, updateUserData, updateUserHealth } = useContext(UserDataContext);
     
     const [editWeight, setEditWeight] = useState(false);
     const [weight, setWeight] = useState(String(stateUserData.weight));
@@ -125,6 +125,7 @@ const HealthData = () => {
                         
                         <Spacer2>
                             <Button
+                                onPress={() => updateUserHealth(stateUserData.id_user, weight, height, physAct, isVeg, parseInt(mealsPerDay))}
                                 title='Guardar Cambios'
                                 titleStyle={{color:'#FFFFFF'}}
                                 buttonStyle={styles.submitButton}

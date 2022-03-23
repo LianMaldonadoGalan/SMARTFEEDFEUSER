@@ -16,13 +16,25 @@ const UserDataReducer = (state, action) => {
 }
 
 const selectUser = dispatch => async (id) => {
-    console.log('Si entra     ' + id)
+    //console.log('Si entra     ' + id)
     const response = await smartFeedApi.get(`/userData/${id}`);
     dispatch({ type: 'get-user', payload: response.data.data})
 };
 
+const updateUserData = dispatch => async (id, name, sex, birth_date) => {
+    console.log(id + "  " + name + "  " + sex + "  " + birth_date + "  ");
+    const response = await smartFeedApi.patch(`/userData/${id}`, {name, sex, birth_date});
+    alert('¡Cambios guardados! :)');
+}
+
+const updateUserHealth = dispatch => async (id, weight, height, physical_activity, is_vegetarian, meals_qty) => {
+    console.log(id + "  " + weight + "  " + height + "  " + physical_activity + "  " + is_vegetarian + "  " + typeof meals_qty);
+    const response = await smartFeedApi.patch(`/userData/${id}`, {weight, height, physical_activity, is_vegetarian, meals_qty});
+    alert('¡Cambios guardados! :)');
+}
+
 export const {Context, Provider } = createDataContext(
     UserDataReducer, 
-    {selectUser}, 
+    {selectUser, updateUserData, updateUserHealth}, 
     {}
 );
