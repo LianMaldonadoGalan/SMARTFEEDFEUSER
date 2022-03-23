@@ -1,23 +1,54 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { StyleSheet, Image, Text, View, 
     KeyboardAvoidingView, Platform, TouchableWithoutFeedback, 
     Keyboard, ScrollView } from "react-native";
-import { Input } from "react-native-elements";
+import { Button, Input } from "react-native-elements";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Spacer from '../../components/Spacer';
 import { Picker } from "@react-native-picker/picker";
 import { Context as UserDataContext } from "../context/UserDataContext";
+import DataTimePicker from '@react-native-community/datetimepicker';
+import moment from "moment";
 
 const AccountScreen = ({navigation}) => {
     const { state: stateUserData } = useContext(UserDataContext);
-
+    
     const [editName, setEditName] = useState(false);
     const [name, setName] = useState(stateUserData.name);
 
     const [sex, setSex] = useState(stateUserData.sex);
 
     const [editAge, setEditAge] = useState(false);
-    const [age, setAge] = useState('45');
+    const [age, setAge] = useState(null);
+
+    const [date, setDate] = useState('1998-12-07');
+    const [show, setShow] = useState(false);
+
+    //Setear la edad por primera vez
+    useEffect(() => {    
+        const fechaAct = new Date();
+        const fechaNac = Date.parse(stateUserData.birth_date);
+        const edad = fechaAct - fechaNac;
+
+        console.log('Edad  ' + Math.floor(edad/(1000*60*60*24*365)-.015));
+        setAge(String(Math.floor(edad/(1000*60*60*24*365)-.015)));
+    }, [])
+
+    const onChange = (event, selectedDate) => {
+        
+        if(selectedDate){
+            const fechaAct = new Date();
+            const fechaNac = selectedDate;
+            const edad = fechaAct - fechaNac;
+            
+            //Math.floor(edad/(1000*60*60*24*365)-.015) Es para convertir la diferencia de fechas en años. El -.015 es una pequeña validación.
+            console.log('Edad  ' + Math.floor(edad/(1000*60*60*24*365)-.015));
+            setAge(String(Math.floor(edad/(1000*60*60*24*365)-.015)));
+            console.log(stateUserData.birth_date);
+            setDate(fechaNac);
+        }
+        setShow(false);
+    }
  
     return (
         <KeyboardAvoidingView 
@@ -74,6 +105,17 @@ const AccountScreen = ({navigation}) => {
                             //onChangeText={}
                         />
                         </Spacer>
+
+                        <View>
+                            <Button onPress={() => setShow(true)} title='Modificar fecha de nacimiento'></Button>
+                        </View>
+                        {show && (
+                            <DataTimePicker
+                                value={date}
+                                mode={'date'}
+                                onChange={onChange}
+                            />
+                        )}
 
                     </SafeAreaView>
                 </ScrollView>
