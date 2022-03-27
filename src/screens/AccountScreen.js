@@ -20,7 +20,7 @@ const AccountScreen = ({navigation}) => {
     const [editAge, setEditAge] = useState(false);
     const [age, setAge] = useState(null);
 
-    const [date, setDate] = useState('1998-12-07');
+    const [date, setDate] = useState(stateUserData.birth_date);
     const [show, setShow] = useState(false);
 
     const [birth, setBirth] = useState(null);

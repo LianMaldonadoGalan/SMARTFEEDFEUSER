@@ -23,6 +23,7 @@ const HealthData = () => {
 
     const [mealsPerDay, setMealsPerDay] = useState(String(stateUserData.meals_qty));
 
+
     return (
         <KeyboardAvoidingView 
          behavior={Platform.OS === 'android' ? 'padding' : 'null'}
