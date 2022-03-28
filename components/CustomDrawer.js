@@ -3,16 +3,18 @@ import {Text,View,Image,StyleSheet} from 'react-native';
 import { DrawerContentScrollView,DrawerItemList,DrawerItem } from "@react-navigation/drawer";
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import {Context as AuthContext} from '../src/context/AuthContext';
+import { Context as UserDataContext } from "../src/context/UserDataContext";
 
 const CustomDrawer = (props) => {
+    const { state: stateUserData, updateUserData } = useContext(UserDataContext);
 
     const {signout} = useContext(AuthContext);
 
     return (
         <View style={{flex:1}}>
             <DrawerContentScrollView {...props}>
-                <Image source={require('../assets/images/photo.png')} style={styles.imagestyle}/>
-                <Text style={styles.textStyle}>John Doe Washington</Text>
+                <Image source={{uri: stateUserData.profile_picture}} style={styles.imagestyle}/>
+                <Text style={styles.textStyle}>{stateUserData.name}</Text>
                 <DrawerItemList {...props}/>
                 <DrawerItem
                 label= "Cerrar Sesion"

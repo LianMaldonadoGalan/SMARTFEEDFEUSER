@@ -20,7 +20,7 @@ const AccountScreen = ({navigation}) => {
     const [editAge, setEditAge] = useState(false);
     const [age, setAge] = useState(null);
 
-    const [date, setDate] = useState(stateUserData.birth_date);
+    const [date, setDate] = useState(new Date(stateUserData.birth_date));
     const [show, setShow] = useState(false);
 
     const [birth, setBirth] = useState(null);
@@ -39,14 +39,14 @@ const AccountScreen = ({navigation}) => {
         
         if(selectedDate){
             const fechaAct = new Date();
-            const fechaNac = selectedDate;
+            const fechaNac = new Date(selectedDate);
             const edad = fechaAct - fechaNac;
             const aux = new Date(fechaNac);
             
             //Math.floor(edad/(1000*60*60*24*365)-.015) Es para convertir la diferencia de fechas en años. El -.015 es una pequeña validación.
             console.log('Edad  ' + Math.floor(edad/(1000*60*60*24*365)-.015));
             setAge(String(Math.floor(edad/(1000*60*60*24*365)-.015)));
-            console.log(stateUserData.birth_date);
+            console.log("nueva:   " + fechaNac.toISOString());
             setDate(fechaNac);
             setBirth(aux.toISOString())
             //console.log("birth  " + birth);
