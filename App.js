@@ -15,6 +15,8 @@ import RecipeScreen from './src/screens/RecipeScreen';
 import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import { Provider as AuthProvider } from './src/context/AuthContext';
+import { Provider as MealProvider} from './src/context/MealContext';
+import { Provider as IngredientProvider } from './src/context/IngredientContext';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -22,9 +24,8 @@ const Drawer = createDrawerNavigator();
 //Variable para decidir que grupo de screens mostrar
 const isLoggedIn = false;
 
-function Root() {
+function Root({route}) {
   return (
-    
     <Drawer.Navigator
     drawerContent={props=> <CustomDrawer {...props}/>}
     screenOptions={{ 
@@ -69,7 +70,7 @@ function Root() {
         drawerIcon:config => <IonIcons name="cart" size={30} color='#60656C'/>
       }}/>
 
-      <Drawer.Screen name="Recipe" component={RecipeScreen} options= {{
+      <Drawer.Screen name="Recipe" initialParams={{ params: route.params }} component={RecipeScreen} options= {{
         headerStyle:{backgroundColor: '#EFCA66', },
         headerTitleAlign: "center",
         headerTitleStyle: {color: '#f0f1f2'},
@@ -77,7 +78,6 @@ function Root() {
       }}/>
 
     </Drawer.Navigator>
-    
   );
 }
 
@@ -87,6 +87,8 @@ export default function App() {
   return (
     
     <NavigationContainer>
+      <IngredientProvider>
+      <MealProvider>
       <AuthProvider>
       {isLoggedIn ? (
         Root()
@@ -101,6 +103,8 @@ export default function App() {
       )
       }
       </AuthProvider>
+      </MealProvider>
+      </IngredientProvider>
     </NavigationContainer>
   );
 }
