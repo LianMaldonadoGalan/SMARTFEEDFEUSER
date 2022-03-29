@@ -12,18 +12,22 @@ import DataTimePicker from '@react-native-community/datetimepicker';
 const AccountScreen = ({navigation}) => {
     const { state: stateUserData, updateUserData } = useContext(UserDataContext);
     
+    //State local de la variable que permite modificar el nombre.
     const [editName, setEditName] = useState(false);
+    //State local del nombre.
     const [name, setName] = useState(stateUserData.name);
 
+    //State local del sexo.
     const [sex, setSex] = useState(stateUserData.sex);
 
-    const [editAge, setEditAge] = useState(false);
+    //State local de la edad.
     const [age, setAge] = useState(null);
 
+    //State local de la fecha de nacimiento.
     const [date, setDate] = useState(new Date(stateUserData.birth_date));
-    const [show, setShow] = useState(false);
 
-    const [birth, setBirth] = useState(null);
+    //State local de la variable que abre el calendario.
+    const [show, setShow] = useState(false);
 
     //Setear la edad por primera vez
     useEffect(() => {    
@@ -31,25 +35,18 @@ const AccountScreen = ({navigation}) => {
         const fechaNac = Date.parse(stateUserData.birth_date);
         const edad = fechaAct - fechaNac;
 
-        console.log('Edad  ' + Math.floor(edad/(1000*60*60*24*365)-.015));
         setAge(String(Math.floor(edad/(1000*60*60*24*365)-.015)));
     }, [])
 
+    //Función para cambiar de fecha de nacimiento y setear la edad según la fecha seleccionada.
     const onChange = (event, selectedDate) => {
-        
         if(selectedDate){
             const fechaAct = new Date();
             const fechaNac = new Date(selectedDate);
             const edad = fechaAct - fechaNac;
-            const aux = new Date(fechaNac);
             
-            //Math.floor(edad/(1000*60*60*24*365)-.015) Es para convertir la diferencia de fechas en años. El -.015 es una pequeña validación.
-            console.log('Edad  ' + Math.floor(edad/(1000*60*60*24*365)-.015));
             setAge(String(Math.floor(edad/(1000*60*60*24*365)-.015)));
-            console.log("nueva:   " + fechaNac.toISOString());
             setDate(fechaNac);
-            setBirth(aux.toISOString())
-            //console.log("birth  " + birth);
         }
         setShow(false);
     }
@@ -77,7 +74,6 @@ const AccountScreen = ({navigation}) => {
                             labelStyle={styles.label}
                             rightIcon={{ type: 'font-awesome', size: 30, name: 'pencil' , color: '#60656C', onPress:() => setEditName(true)}}
                             blurOnSubmit={false}
-                            //onChangeText={}
                         />
                         </Spacer>
 
@@ -97,16 +93,14 @@ const AccountScreen = ({navigation}) => {
                     
                         <Spacer>
                         <Input
-                            disabled = {editAge? false : true}
+                            disabled = {false}
                             value={age}
                             onChangeText={(age) => setAge(age)}
-                            editable = {editAge ? true : false}
+                            editable = {false}
                             label="Edad" 
                             labelStyle={styles.label}
-                            rightIcon={{ type: 'font-awesome', size: 30, name: 'pencil' , color: '#60656C', onPress:() => setEditAge(true)}}
                             blurOnSubmit={false}
                             keyboardType='numeric'
-                            //onChangeText={}
                         />
                         </Spacer>
 
@@ -125,7 +119,7 @@ const AccountScreen = ({navigation}) => {
                         )}
 
                         <Button 
-                            onPress={() => updateUserData(stateUserData.id_user, name, sex, birth)} 
+                            onPress={() => updateUserData(stateUserData.id_user, name, sex, date.toISOString())} 
                             title='Confirmar'
                             titleStyle={{color:'#FFFFFF'}}
                             buttonStyle={styles.submitButton}

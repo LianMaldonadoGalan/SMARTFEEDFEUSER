@@ -11,16 +11,23 @@ import { Context as UserDataContext } from "../context/UserDataContext";
 const HealthData = () => {
     const { state: stateUserData, updateUserData, updateUserHealth } = useContext(UserDataContext);
     
+    //State local de la variable que permite modificar el peso.
     const [editWeight, setEditWeight] = useState(false);
+    //State local del peso.
     const [weight, setWeight] = useState(String(stateUserData.weight));
 
+    //State local de la variable que permite modificar la altura.
     const [editHeight, setEditHeight] = useState(false);
+    //State local de la altura.
     const [height, setHeight] = useState(String(stateUserData.height));
 
+    //State local de actividad física.
     const [physAct, setPhysAct] = useState(String(stateUserData.physical_activity));
 
+    //State local de isVeg.
     const [isVeg, setIsVeg] = useState(String(stateUserData.is_vegetarian));
 
+    //State local del comidas por día.
     const [mealsPerDay, setMealsPerDay] = useState(String(stateUserData.meals_qty));
 
 

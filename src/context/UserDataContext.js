@@ -16,7 +16,6 @@ const UserDataReducer = (state, action) => {
 }
 
 const selectUser = dispatch => async (id) => {
-    //console.log('Si entra     ' + id)
     const response = await smartFeedApi.get(`/userData/${id}`);
     dispatch({ type: 'get-user', payload: response.data.data})
 };
