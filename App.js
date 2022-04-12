@@ -23,9 +23,8 @@ const Drawer = createDrawerNavigator();
 //Variable para decidir que grupo de screens mostrar
 const isLoggedIn = false;
 
-function Root() {
+function Root({route}) {
   return (
-    
     <Drawer.Navigator
     drawerContent={props=> <CustomDrawer {...props}/>}
     screenOptions={{ 
@@ -70,7 +69,7 @@ function Root() {
         drawerIcon:config => <IonIcons name="cart" size={30} color='#60656C'/>
       }}/>
 
-      <Drawer.Screen name="Recipe" component={RecipeScreen} options= {{
+      <Drawer.Screen name="Recipe" initialParams={{ params: route.params }} component={RecipeScreen} options= {{
         headerStyle:{backgroundColor: '#EFCA66', },
         headerTitleAlign: "center",
         headerTitleStyle: {color: '#f0f1f2'},
@@ -78,7 +77,6 @@ function Root() {
       }}/>
 
     </Drawer.Navigator>
-    
   );
 }
 
