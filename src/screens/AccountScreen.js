@@ -1,21 +1,55 @@
-import React, {useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { StyleSheet, Image, Text, View, 
     KeyboardAvoidingView, Platform, TouchableWithoutFeedback, 
     Keyboard, ScrollView } from "react-native";
-import { Input } from "react-native-elements";
+import { Button, Input } from "react-native-elements";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Spacer from '../../components/Spacer';
 import { Picker } from "@react-native-picker/picker";
+import { Context as UserDataContext } from "../context/UserDataContext";
+import DataTimePicker from '@react-native-community/datetimepicker';
 
 const AccountScreen = ({navigation}) => {
-
+    const { state: stateUserData, updateUserData } = useContext(UserDataContext);
+    
+    //State local de la variable que permite modificar el nombre.
     const [editName, setEditName] = useState(false);
-    const [name, setName] = useState('John Doe Washington');
+    //State local del nombre.
+    const [name, setName] = useState(stateUserData.name);
 
-    const [sex, setSex] = useState(null);
+    //State local del sexo.
+    const [sex, setSex] = useState(stateUserData.sex);
 
-    const [editAge, setEditAge] = useState(false);
-    const [age, setAge] = useState('45');
+    //State local de la edad.
+    const [age, setAge] = useState(null);
+
+    //State local de la fecha de nacimiento.
+    const [date, setDate] = useState(new Date(stateUserData.birth_date));
+
+    //State local de la variable que abre el calendario.
+    const [show, setShow] = useState(false);
+
+    //Setear la edad por primera vez
+    useEffect(() => {    
+        const fechaAct = new Date();
+        const fechaNac = Date.parse(stateUserData.birth_date);
+        const edad = fechaAct - fechaNac;
+
+        setAge(String(Math.floor(edad/(1000*60*60*24*365)-.015)));
+    }, [])
+
+    //Función para cambiar de fecha de nacimiento y setear la edad según la fecha seleccionada.
+    const onChange = (event, selectedDate) => {
+        if(selectedDate){
+            const fechaAct = new Date();
+            const fechaNac = new Date(selectedDate);
+            const edad = fechaAct - fechaNac;
+            
+            setAge(String(Math.floor(edad/(1000*60*60*24*365)-.015)));
+            setDate(fechaNac);
+        }
+        setShow(false);
+    }
  
     return (
         <KeyboardAvoidingView 
@@ -26,21 +60,20 @@ const AccountScreen = ({navigation}) => {
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <ScrollView>
                     <SafeAreaView>
-                        <Image source={require('../../assets/images/photo.png')} style={styles.imagestyle}/>
+                        <Image source={{uri: stateUserData.profile_picture}} style={styles.imagestyle}/>
                         
                         <Spacer>
                         <Input
-                        disabled = {editName ? false : true}
-                        value={name}
-                        onChangeText={(name) => setName(name)}
-                        autoCapitalize= "none"
-                        autoCorrect={false}
-                        editable = {editName ? true : false}
-                        label="Nombre" 
-                        labelStyle={styles.label}
-                        rightIcon={{ type: 'font-awesome', size: 30, name: 'pencil' , color: '#60656C', onPress:() => setEditName(true)}}
-                        blurOnSubmit={false}
-                        //onChangeText={}
+                            disabled = {editName ? false : true}
+                            value={name}
+                            onChangeText={(name) => setName(name)}
+                            autoCapitalize= "none"
+                            autoCorrect={false}
+                            editable = {editName ? true : false}
+                            label="Nombre" 
+                            labelStyle={styles.label}
+                            rightIcon={{ type: 'font-awesome', size: 30, name: 'pencil' , color: '#60656C', onPress:() => setEditName(true)}}
+                            blurOnSubmit={false}
                         />
                         </Spacer>
 
@@ -60,18 +93,37 @@ const AccountScreen = ({navigation}) => {
                     
                         <Spacer>
                         <Input
-                        disabled = {editAge? false : true}
-                        value={age}
-                        onChangeText={(age) => setAge(age)}
-                        editable = {editAge ? true : false}
-                        label="Edad" 
-                        labelStyle={styles.label}
-                        rightIcon={{ type: 'font-awesome', size: 30, name: 'pencil' , color: '#60656C', onPress:() => setEditAge(true)}}
-                        blurOnSubmit={false}
-                        keyboardType='numeric'
-                        //onChangeText={}
+                            disabled = {false}
+                            value={age}
+                            onChangeText={(age) => setAge(age)}
+                            editable = {false}
+                            label="Edad" 
+                            labelStyle={styles.label}
+                            blurOnSubmit={false}
+                            keyboardType='numeric'
                         />
                         </Spacer>
+
+                        <Spacer>
+                            <View>
+                                <Button onPress={() => setShow(true)} title='Modificar fecha de nacimiento'></Button>
+                            </View>
+                        </Spacer>
+                        
+                        {show && (
+                            <DataTimePicker
+                                value={date}
+                                mode={'date'}
+                                onChange={onChange}
+                            />
+                        )}
+
+                        <Button 
+                            onPress={() => updateUserData(stateUserData.id_user, name, sex, date.toISOString())} 
+                            title='Confirmar'
+                            titleStyle={{color:'#FFFFFF'}}
+                            buttonStyle={styles.submitButton}
+                        />
 
                     </SafeAreaView>
                 </ScrollView>
@@ -116,6 +168,15 @@ const styles = StyleSheet.create({
         marginHorizontal: 14,
         
     },
+    submitButton:{
+        marginTop: 50,
+        backgroundColor: '#2fa822',
+        borderRadius: 10,
+        padding: 25,
+        alignSelf: "center",
+        width: 350,
+        marginBottom: 50
+    }
    
 });
 

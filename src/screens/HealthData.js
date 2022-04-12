@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState, useContext } from "react";
 import { StyleSheet, Text, View, 
     KeyboardAvoidingView, Platform, TouchableWithoutFeedback, 
     Keyboard, ScrollView } from "react-native";
@@ -6,20 +6,30 @@ import { Input, Button } from "react-native-elements";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Spacer2 from '../../components/Spacer2';
 import { Picker } from "@react-native-picker/picker";
+import { Context as UserDataContext } from "../context/UserDataContext";
 
 const HealthData = () => {
-
+    const { state: stateUserData, updateUserData, updateUserHealth } = useContext(UserDataContext);
+    
+    //State local de la variable que permite modificar el peso.
     const [editWeight, setEditWeight] = useState(false);
-    const [weight, setWeight] = useState('75Kg');
+    //State local del peso.
+    const [weight, setWeight] = useState(String(stateUserData.weight));
 
+    //State local de la variable que permite modificar la altura.
     const [editHeight, setEditHeight] = useState(false);
-    const [height, setHeight] = useState('180cm');
+    //State local de la altura.
+    const [height, setHeight] = useState(String(stateUserData.height));
 
-    const [physAct, setPhysAct] = useState(null);
+    //State local de actividad física.
+    const [physAct, setPhysAct] = useState(String(stateUserData.physical_activity));
 
-    const [isVeg, setIsVeg] = useState(null);
+    //State local de isVeg.
+    const [isVeg, setIsVeg] = useState(String(stateUserData.is_vegetarian));
 
-    const [mealsPerDay, setMealsPerDay] = useState(null);
+    //State local del comidas por día.
+    const [mealsPerDay, setMealsPerDay] = useState(String(stateUserData.meals_qty));
+
 
     return (
         <KeyboardAvoidingView 
@@ -95,8 +105,8 @@ const HealthData = () => {
                                         }
                                     style={styles.picker}
                                 >
-                                    <Picker.Item label="No" value="0"/>
-                                    <Picker.Item label="Si" value="1"/>
+                                    <Picker.Item label="No" value="F"/>
+                                    <Picker.Item label="Si" value="T"/>
 
                                 </Picker>
                             </Spacer2>
@@ -123,6 +133,7 @@ const HealthData = () => {
                         
                         <Spacer2>
                             <Button
+                                onPress={() => updateUserHealth(stateUserData.id_user, weight, height, physAct, isVeg, parseInt(mealsPerDay))}
                                 title='Guardar Cambios'
                                 titleStyle={{color:'#FFFFFF'}}
                                 buttonStyle={styles.submitButton}

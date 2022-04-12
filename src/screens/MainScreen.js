@@ -1,15 +1,24 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { StyleSheet, View, Dimensions } from "react-native";
-import { Text } from "react-native-elements";
+import { Button, Text } from "react-native-elements";
 import Carousel from 'react-native-snap-carousel';
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Context as UserContext } from '../context/UserDataContext';
+import { Context as AuthContext } from '../context/AuthContext';
 
 
 
 
 
 const MainScreen = () => {
+    const { state: stateData, selectUser } = useContext(UserContext);
+    const { state: stateAuth } = useContext(AuthContext);
 
+    useEffect(() => {
+        console.log(stateAuth.userdata.id_user);
+        selectUser(stateAuth.userdata.id_user);
+        console.log(stateData);
+    }, [])
     
 
         const state = {
@@ -38,6 +47,7 @@ const MainScreen = () => {
           }
         ]
       }
+      console.log(stateData)
     
 
     const renderItem = ({item}) => {
@@ -58,6 +68,11 @@ const MainScreen = () => {
         )
     }
 
+    function palboton () {
+        console.log(stateAuth.userdata.id_user)
+        selectUser(stateAuth.userdata.id_user);
+    }
+
     
    return (
         <SafeAreaView >
@@ -76,6 +91,7 @@ const MainScreen = () => {
                 />
                 </View>
                 <Text>hola</Text>
+                <Button onPress={() => palboton()} title='goli'></Button>
         </SafeAreaView>
     );
 };
