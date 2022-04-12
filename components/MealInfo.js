@@ -1,110 +1,50 @@
 import React, {useState} from 'react';
-import {View, Text, Image, Dimensions, StyleSheet,ScrollView} from 'react-native';
+import {View, Text, Image, Dimensions, StyleSheet, TouchableOpacity} from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
-import Spacer from './Spacer';
-
+import { useNavigation } from "@react-navigation/native";
+import FastImage from 'react-native-fast-image';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-const MealInfo = () => {
 
-    //Imagenes
-
-    const images = [
-        'https://cdn2.cocinadelirante.com/sites/default/files/images/2018/12/receta-facil-de-pollo-en-mole.jpg',
-        'https://dam.cocinafacil.com.mx/wp-content/uploads/2013/03/pollo-con-mole.jpg',
-        'https://imagesvc.meredithcorp.io/v3/mm/image?url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F21%2F2017%2F05%2F11%2Fpollo-en-mole-rojo-f-cil.jpg-2000.jpg&q=60'
-    ]
-
-    //State imagen activa
-
-    const [activeImg, setActiveImg] = useState(0);
-
-    onchange = (nativeEvent) => {
-        if(nativeEvent){
-            const slide = Math.ceil(nativeEvent.contentOffset.x / nativeEvent.layoutMeasurement.width);
-            if(slide != activeImg){
-                setActiveImg(slide);
-            }
-        }
-    }
-
+const MealInfo = ({ result }) => {
+    const navigation = useNavigation();
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.imgwrap}>
-                <ScrollView
-                 onScroll={({nativeEvent}) => onchange(nativeEvent)}
-                 showsVerticalScrollIndicator={false}
-                 pagingEnabled
-                 horizontal
-                 style={styles.imgwrap}
-                 >
-                     {
-                         images.map((e, index) =>
-                         <Image
-                            key={e}
-                            resizeMode='stretch'
-                            style={styles.imgwrap}
-                            source={{uri: e}}
-                         />
-                         )
-                     }
-                    
-                </ScrollView>
-                <View style={styles.wrapDot}>
-                {
-                         images.map((e, index) =>
-                         <Text
-                            key={e}
-                            style={activeImg == index ? styles.dotActive : styles.dot}
-                         >
-                          ●
-                         </Text>
-                         )
-                     }
-                </View>
+                <TouchableOpacity delayPressIn={500} onPress={() => navigation.navigate('Recipe',{result})}>
+                    <Image
+                        style={styles.imgwrap}
+                        source={{uri: result.meal_photo}}
+                        
+                    />
+                </TouchableOpacity>
             </View>
-            <ScrollView >
-                <Spacer>
-                    <Text style={styles.text}>Mole con pollo</Text>
-                </Spacer>
+            
+        
+            <Text style={styles.text}>{result.meal_name}</Text>
+        
+            <Text style={styles.text}>{result.meal_description}</Text>
+                        
+            
+            <View style={styles.healthPropsContainer}>
+                <Text style={styles.text3}>- Calorias </Text>
+                <Text style={[styles.healthProps, styles.text2]}>{result.meal_calories} Kcal/100g{'\n'}</Text>
                 
-                <Spacer>
-                    <Text style={styles.text}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
-                        incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
-                        exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute 
-                        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla 
-                        pariatur
-                    </Text>
-                </Spacer>                
+            
+                <Text style={styles.text3}>- Proteina </Text>
+                <Text style={[styles.healthProps, styles.text2]}>{result.meal_protein}g /100g{'\n'}</Text>
+            
 
-                <Spacer/>
-                <Spacer >
-                    
-                    <View style={styles.healthPropsContainer}>
-                        <Text style={styles.text}>- Calorias </Text>
-                        <Text style={styles.healthProps, styles.text}>359 Kcal/100g{'\n'}</Text>
-                    </View>
+                <Text style={styles.text3}>- Grasas </Text>
+                <Text style={[styles.healthProps, styles.text2]}>{result.meal_fats}g /100g{'\n'}</Text>
+            
 
-    
-                    <View style={styles.healthPropsContainer}>
-                        <Text style={styles.text}>- Proteina </Text>
-                        <Text style={styles.healthProps, styles.text}>12.7g /100g{'\n'}</Text>
-                    </View>
-
-                    <View style={styles.healthPropsContainer}>
-                        <Text style={styles.text}>- Grasas </Text>
-                        <Text style={styles.healthProps, styles.text}>1.5g /100g{'\n'}</Text>
-                    </View>
-
-                    <View style={styles.healthPropsContainer}>
-                        <Text style={styles.text}>- Carbohidratos </Text>
-                        <Text style={styles.healthProps, styles.text}>12.3g /100g{'\n'}</Text>
-                    </View>
-                     
-                </Spacer>
-            </ScrollView>
+                <Text style={styles.text3}>- Carbohidratos </Text>
+                <Text style={[styles.healthProps, styles.text2]}>{result.meal_carbohydrates}g /100g{'\n'}</Text>
+            </View>
+                
         </SafeAreaView>
     );
 }
@@ -135,17 +75,30 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     healthPropsContainer:{
-        flexDirection: "row",
-        justifyContent: "space-between",
-        
+        alignItems: 'flex-start',
+        flexWrap: 'wrap',
+        flexDirection: 'row',
+        margin: 14
     },
     healthProps:{
-        alignSelf: "flex-end"   
+        alignSelf: 'flex-end'
     },
 
     text:{
         color: '#60656C',
         fontSize: 18,
+        margin: 14
+    },
+    text2:{
+        color: '#60656C',
+        fontSize: 18,
+        textAlign: 'right',
+        
+    },
+    text3:{
+        color: '#60656C',
+        fontSize: 18,
+        width: 250
     }
 });
 
