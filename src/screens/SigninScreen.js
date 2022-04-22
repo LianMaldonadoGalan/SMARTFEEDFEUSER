@@ -5,10 +5,12 @@ import { StyleSheet, Image, View, TouchableOpacity,
 import { Text, Button, Input } from "react-native-elements";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Context as AuthContext } from '../context/AuthContext';
+import { Context as UserContext } from '../context/UserDataContext';
 
 const SigninScreen = ({ navigation }) => {
 
-    const {state, signin, clearErrorMessage } = useContext(AuthContext);
+    const { state, signin, clearErrorMessage } = useContext(AuthContext);
+    const { selectUser, resetData } = useContext(UserContext);
 
     //State para ocultar la contraseña
     const [hidePass1, setHidePass1] = useState(true);
@@ -75,10 +77,19 @@ const SigninScreen = ({ navigation }) => {
                         {/* BOTON INICIAR SESION */}
                         <Button
                             title='Iniciar Sesion'
-                            onPress={() => navigation.push('Signup')}
                             titleStyle={{color:'#FFFFFF', fontSize: 18}}
                             buttonStyle={styles.submitButton}
-                            onPress={() => signin({email,passwd})}
+                            onPress={ async ()  => {
+                                try {
+                                    resetData()
+                                    await signin({email,passwd})
+                                    setEmail("")
+                                    setPassword("")
+                                    selectUser(state.userdata)
+                                } catch (error) {
+                                    console.error(error)
+                                }
+                            }}
                         />
 
 

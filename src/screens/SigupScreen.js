@@ -5,14 +5,17 @@ import { StyleSheet,View, TouchableOpacity,
 import { Text, Button, Input } from "react-native-elements";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Context as AuthContext2 } from '../context/AuthContext';
+import { Context as UserContext } from '../context/UserDataContext';
 
 const SignupScreen = ({ navigation }) => {
 
     const {state, signup, clearErrorMessage } = useContext(AuthContext2);
+    const { selectUser, resetData  } = useContext(UserContext);
 
     //STATES para ocultar contraseña
     const [hidePass1, setHidePass1] = useState(true);
     const [hidePass2, setHidePass2] = useState(true);
+    const [disableButton, setDisableButton] = useState(false);
 
     const [email, setEmail] = useState('');
     const [passwd, setPassword] = useState('');
@@ -32,7 +35,6 @@ const SignupScreen = ({ navigation }) => {
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <ScrollView>
                     <SafeAreaView>
-
 
                         {/* HEADER */}
                         <Text style={styles.header}>Registrarse</Text>
@@ -91,17 +93,28 @@ const SignupScreen = ({ navigation }) => {
                         {/* BOTON REGISTRARSE */}
                         <Button
                             title='Registrarme'
-                            onPress={() => navigation.push('Signin')}
+                            disabled={disableButton}
                             titleStyle={{color:'#FFFFFF', fontSize: 18}}
                             buttonStyle={styles.submitButton}
-                            onPress={() => signup({email,passwd,confirmpw})}
+                            onPress={() => {
+                                try {
+                                    resetData()
+                                    setDisableButton(true)
+                                    signup({email,passwd,confirmpw})
+                                    setEmail("")
+                                    setPassword("")
+                                    selectUser(state.userdata)
+                                } catch (error) {
+                                    console.log(error)
+                                }
+                            }}
                         />
 
                         {/* LINK Y PREGUNTA */}
                         <View style={{flexDirection:"row", justifyContent: "space-evenly"}}>
                         <Text style={styles.question}>¿Ya tienes cuenta?</Text>
                         <TouchableOpacity onPress={() => navigation.push('Signin')}>
-                        <Text style={styles.link}>Inciar Sesion</Text>
+                        <Text style={styles.link}>Iniciar Sesion</Text>
                         </TouchableOpacity>
                         </View>
 

@@ -1,51 +1,46 @@
 import React, {useState} from 'react';
-import {View, Text, Image, Dimensions, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, Image, Dimensions, StyleSheet, TouchableOpacity, TouchableWithoutFeedback} from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
-import FastImage from 'react-native-fast-image';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-
 const MealInfo = ({ result }) => {
     const navigation = useNavigation();
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.imgwrap}>
-                <TouchableOpacity delayPressIn={500} onPress={() => navigation.navigate('Recipe',{result})}>
-                    <Image
-                        style={styles.imgwrap}
-                        source={{uri: result.meal_photo}}
-                        
-                    />
-                </TouchableOpacity>
-            </View>
-            
-        
-            <Text style={styles.text}>{result.meal_name}</Text>
-        
-            <Text style={styles.text}>{result.meal_description}</Text>
-                        
-            
-            <View style={styles.healthPropsContainer}>
-                <Text style={styles.text3}>- Calorias </Text>
-                <Text style={[styles.healthProps, styles.text2]}>{result.meal_calories} Kcal/100g{'\n'}</Text>
+        <TouchableWithoutFeedback>
+            <SafeAreaView style={styles.container}>
+                <View style={styles.imgwrap}>
+                    <TouchableOpacity delayPressIn={500} onPress={() => navigation.navigate('Recipe',{result})}>
+                        <Image
+                            style={styles.imgwrap}
+                            source={{uri: result.meal_photo}}
+                        />
+                    </TouchableOpacity>
+                </View>
                 
-            
-                <Text style={styles.text3}>- Proteina </Text>
-                <Text style={[styles.healthProps, styles.text2]}>{result.meal_protein}g /100g{'\n'}</Text>
-            
-
-                <Text style={styles.text3}>- Grasas </Text>
-                <Text style={[styles.healthProps, styles.text2]}>{result.meal_fats}g /100g{'\n'}</Text>
-            
-
-                <Text style={styles.text3}>- Carbohidratos </Text>
-                <Text style={[styles.healthProps, styles.text2]}>{result.meal_carbohydrates}g /100g{'\n'}</Text>
-            </View>
+                <Text style={styles.text}>{result.meal_name}</Text>
+                <Text style={styles.text}>{result.meal_description}</Text>
                 
-        </SafeAreaView>
+                <View style={styles.healthPropsContainer}>
+                    <Text style={styles.text3}>- Calorias </Text>
+                    <Text style={[styles.healthProps, styles.text2]}>{result.meal_calories} Kcal/100g{'\n'}</Text>
+                    
+                
+                    <Text style={styles.text3}>- Proteina </Text>
+                    <Text style={[styles.healthProps, styles.text2]}>{result.meal_protein}g /100g{'\n'}</Text>
+                
+
+                    <Text style={styles.text3}>- Grasas </Text>
+                    <Text style={[styles.healthProps, styles.text2]}>{result.meal_fats}g /100g{'\n'}</Text>
+                
+
+                    <Text style={styles.text3}>- Carbohidratos </Text>
+                    <Text style={[styles.healthProps, styles.text2]}>{result.meal_carbohydrates}g /100g{'\n'}</Text>
+                </View>
+            </SafeAreaView>
+        </TouchableWithoutFeedback>
     );
 }
 

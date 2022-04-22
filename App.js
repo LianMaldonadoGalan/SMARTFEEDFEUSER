@@ -16,6 +16,7 @@ import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import { Provider as AuthProvider } from './src/context/AuthContext';
 import { Provider as UserDataProvider } from './src/context/UserDataContext';
+import { Provider as IngredientProvider } from './src/context/IngredientContext';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -87,6 +88,7 @@ export default function App() {
     
     <NavigationContainer>
       <UserDataProvider>
+      <IngredientProvider>
         <AuthProvider>
         {isLoggedIn ? (
           Root()
@@ -101,6 +103,7 @@ export default function App() {
         )
         }
         </AuthProvider>
+        </IngredientProvider>
       </UserDataProvider>
     </NavigationContainer>
   );
