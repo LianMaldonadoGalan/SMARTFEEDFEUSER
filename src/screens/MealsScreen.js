@@ -176,7 +176,9 @@ const MealsScreen = ({navigation}) => {
     }
 
     const renderItem = ({ item }) => (
+        <View>
         <MealInfo result={item}/>
+        </View>
     );
 
     const renderFooter = () => {

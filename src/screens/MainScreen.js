@@ -7,17 +7,12 @@ import { Context as UserContext } from '../context/UserDataContext';
 import { Context as AuthContext } from '../context/AuthContext';
 
 
-
-
-
 const MainScreen = () => {
     const { state: stateData, selectUser } = useContext(UserContext);
     const { state: stateAuth } = useContext(AuthContext);
 
     useEffect(() => {
-        console.log(stateAuth.userdata.id_user);
-        selectUser(stateAuth.userdata.id_user);
-        console.log(stateData);
+        selectUser(stateAuth.userdata);
     }, [])
     
 
@@ -47,9 +42,7 @@ const MainScreen = () => {
           }
         ]
       }
-      console.log(stateData)
     
-
     const renderItem = ({item}) => {
         return (
           <View style={{
@@ -68,11 +61,7 @@ const MainScreen = () => {
         )
     }
 
-    function palboton () {
-        console.log(stateAuth.userdata.id_user)
-        selectUser(stateAuth.userdata.id_user);
-    }
-
+  
     
    return (
         <SafeAreaView >
@@ -91,7 +80,7 @@ const MainScreen = () => {
                 />
                 </View>
                 <Text>hola</Text>
-                <Button onPress={() => palboton()} title='goli'></Button>
+                <Button title='goli'></Button>
         </SafeAreaView>
     );
 };

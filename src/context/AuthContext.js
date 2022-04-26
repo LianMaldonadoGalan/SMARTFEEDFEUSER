@@ -1,8 +1,10 @@
 import createDataContext from "./createDataContext";
+import { useContext } from "react";
 import smartFeedApi from "../api/smartfeed";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from "@react-navigation/native";
 import CryptoES from "crypto-es";
+
 
 const validateEmail = (text) => {
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
@@ -45,10 +47,7 @@ const tryLocalSignin = (dispatch) => {
     const navigation = useNavigation();
     return async () => {
     const token = await AsyncStorage.getItem('token');
-    let userdata = await AsyncStorage.getItem('userData');
-
-    userdata = JSON.parse(userdata);
-    
+    const userdata = await AsyncStorage.getItem('userData');
 
     if(token){
         dispatch({ type: 'signin', payload: token});
@@ -88,16 +87,16 @@ const signup = (dispatch) => {
 
         try {
             const response = await smartFeedApi.post('/users/register', {email, passwd: pass});
-            await AsyncStorage.setItem('token', response.token);
-            await AsyncStorage.setItem('userData', JSON.stringify(response.data.data));
+            await AsyncStorage.setItem('token', response.data.token);
+            await AsyncStorage.setItem('userData', JSON.stringify(response.data.data.id_user));
             dispatch({ type: 'signin', payload: response.data});
-            dispatch({ type: 'save_user_data', payload: response.data.data});
+            dispatch({ type: 'save_user_data', payload: response.data.data.id_user});
+
 
             navigation.navigate('Root');
             //navigation.navigate('Root', { screen: 'Meals' });
         } catch (error) {
             dispatch({ type: 'add_error', payload: 'Algo salió mal al intentar registrarte'});
-            console.log(error);
         }
     };
 };
@@ -118,16 +117,15 @@ const signin = (dispatch) => {
         try {
             const response = await smartFeedApi.post('/users/login', {email, passwd: pass} );
             await AsyncStorage.setItem('token', response.data.token);
-            await AsyncStorage.setItem('userData', JSON.stringify(response.data.data));
+            await AsyncStorage.setItem('userData', JSON.stringify(response.data.data.id_user));
             dispatch({ type: 'signin', payload: response.data.token});
-            dispatch({ type: 'save_user_data', payload: response.data.data});
+            dispatch({ type: 'save_user_data', payload: response.data.data.id_user});
             
             
             navigation.navigate('Root');
             //navigation.navigate('Root', { screen: 'Meals' });
         } catch (error) {
             dispatch({ type: 'add_error', payload: 'Email o contraseña incorrectos'});
-            console.log(error);
         }
     };
 };

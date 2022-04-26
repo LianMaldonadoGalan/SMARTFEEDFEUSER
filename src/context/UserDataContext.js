@@ -10,15 +10,26 @@ const UserDataReducer = (state, action) => {
     switch(action.type){
         case 'get-user':
             return action.payload
+        case 'reset_data':
+            return {}
+
         default:
             return state;
     }
 }
 
 const selectUser = dispatch => async (id) => {
-    const response = await smartFeedApi.get(`/userData/${id}`);
-    dispatch({ type: 'get-user', payload: response.data.data})
+    try {
+        const response = await smartFeedApi.get(`/userData/${id}`);
+        dispatch({ type: 'get-user', payload: response.data.data})
+    } catch (error) {
+        console.log(error);
+    }
 };
+
+const resetData = dispatch => () => {
+    dispatch({type: 'reset_data'})
+}
 
 const updateUserData = dispatch => async (id, name, sex, birthDate) => {
     const response = await smartFeedApi.patch(`/userData/${id}`, {name, sex, birthDate});
@@ -32,6 +43,6 @@ const updateUserHealth = dispatch => async (id, weight, height, physicalActivity
 
 export const {Context, Provider } = createDataContext(
     UserDataReducer, 
-    {selectUser, updateUserData, updateUserHealth}, 
+    {selectUser, updateUserData, updateUserHealth, resetData}, 
     {}
 );
