@@ -4,8 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from "@react-navigation/native";
 
 
-const UserPrefReducer = (state, action) => {
-
+const MenuReducer = (state, action) => {
     switch(action.type){
         case 'create-menu':
             return action.payload;
@@ -15,16 +14,11 @@ const UserPrefReducer = (state, action) => {
 }
 
 const createMenu = dispatch => async (id) => {
-    const response = await smartFeedApi.get(`/menu/${id}`);
-    dispatch({type: 'create-menu', payload: response.data.data});
-};
-
-const getUserPref = dispatch => async (id) => {
     const response = await smartFeedApi.get(`/userPref/${id}`);
     dispatch({type: 'create-menu', payload: response.data.data});
 };
 
 export const {Context, Provider } = createDataContext(
-    UserPrefReducer, 
-    {getUserPref, createMenu}, 
+    MenuReducer, 
+    {createMenu}, 
     {});
