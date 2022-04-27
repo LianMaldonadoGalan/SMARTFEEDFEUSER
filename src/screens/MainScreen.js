@@ -28,14 +28,16 @@ const MainScreen = () => {
     const { state: stateAuth } = useContext(AuthContext);
     const { state: stateMenu, getUserPref, createMenu } = useContext(UserPrefContext);
 
-    const [ menu, setMenu ] = useState(getUserPref(stateAuth.userdata));
+    const [ menu, setMenu ] = useState(o);
     const [ goal, setGoal ] = useState("");
 
-    useEffect( async () => {
+    useEffect( () => {
         selectUser(stateAuth.userdata);
         getUserPref(stateAuth.userdata);
+        console.log(menu);
         setMenu(getUserPref(stateAuth.userdata));
-    }, [])
+        console.log(menu);
+    }, [menu])
 
         const state = {
           activeIndex:0,
@@ -96,13 +98,13 @@ const MainScreen = () => {
         activeIndex:0,
         carouselItems: [
           {
-            title: menu.monday.comida[0]
+            title: stateMenu.monday
           },
           {
-            title: menu.monday.comida[1]
+            title: stateMenu.monday
           },
           {
-            title: menu.monday.comida[2]
+            title: stateMenu.monday
           }
         ]
     }

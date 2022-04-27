@@ -8,7 +8,7 @@ const UserPrefReducer = (state, action) => {
 
     switch(action.type){
         case 'create-menu':
-            return action.payload;
+            return {...state, menu_json: action.payload};
         default:
             return state;
     }
@@ -21,7 +21,8 @@ const createMenu = dispatch => async (id) => {
 
 const getUserPref = dispatch => async (id) => {
     const response = await smartFeedApi.get(`/userPref/${id}`);
-    dispatch({type: 'create-menu', payload: response.data.data});
+    console.log(JSON.parse(response.data.data.menu_json));
+    dispatch({type: 'create-menu', payload: JSON.parse(response.data.data.menu_json)});
 };
 
 export const {Context, Provider } = createDataContext(
