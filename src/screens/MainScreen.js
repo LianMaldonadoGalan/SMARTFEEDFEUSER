@@ -1,4 +1,4 @@
-import React, { Component, useContext, useEffect, useState } from "react";
+import React, { Component, useCallback, useContext, useEffect, useState } from "react";
 import { StyleSheet, View, Dimensions, SliderComponent } from "react-native";
 import { Button, Text } from "react-native-elements";
 import Carousel from 'react-native-snap-carousel';
@@ -9,12 +9,19 @@ import { Context as UserPrefContext } from '../context/UserPrefContext';
 import { Context as MealContext} from '../context/MealContext';
 import { Picker } from "@react-native-picker/picker";
 import Spacer from '../../components/Spacer';
-
+import { useFocusEffect } from "@react-navigation/core";
+import smartFeedApi from "../api/smartfeed";
 
 
 const MainScreen = () => {
     const o = {
-        monday: { },
+        monday: { 
+            desayuno: [],
+            almuerzo: [],
+            comida: [],
+            merienda: [],
+            cena: []
+        },
         tuesday: { },
         wednesday: { },
         thursday: { },
@@ -31,14 +38,20 @@ const MainScreen = () => {
     const [ menu, setMenu ] = useState(o);
     const [ goal, setGoal ] = useState("");
 
-    useEffect( () => {
-        selectUser(stateAuth.userdata);
-        getUserPref(stateAuth.userdata);
-        console.log(menu);
-        setMenu(getUserPref(stateAuth.userdata));
-        console.log(menu);
-    }, [menu])
+    
+    const getMenu = async (id) => {
+        const response = await smartFeedApi.get(`/userPref/${id}`);
+        setMenu(JSON.parse(response.data.data.menu_json));
+    };
 
+
+    useFocusEffect(
+        useCallback(() => {
+            selectUser(stateAuth.userdata);
+            getMenu(stateAuth.userdata)
+        },[])
+    );
+    
         const state = {
           activeIndex:0,
           carouselItems: [
@@ -84,28 +97,25 @@ const MainScreen = () => {
         )
     }
 
-    const onPress = async () => {
+    const onPress = () => {
         putGoal(stateAuth.userdata, goal);
         createMenu(stateAuth.userdata);
-        getUserPref(stateAuth.userdata);
-        setMenu(JSON.parse(stateMenu.menu_json));
-        console.log(menu);
-        console.log(stateMenu);
+        getMenu(stateAuth.userdata)
     }
   
 
     const comidota = {
         activeIndex:0,
         carouselItems: [
-          {
-            title: stateMenu.monday
-          },
-          {
-            title: stateMenu.monday
-          },
-          {
-            title: stateMenu.monday
-          }
+            {
+                title: menu.monday.comida[0]
+            },
+            {
+                title: menu.monday.comida[1]
+            },
+            {
+                title: menu.monday.comida[2]
+            }
         ]
     }
 
@@ -198,19 +208,18 @@ const MainScreen = () => {
                 {menu.monday.merienda ? 
                     <Spacer>
                         <Text>Meriendas:</Text>
-                        <Text>{menu.monday.merienda}</Text>
+                        <Text>{menu.monday.merienda }</Text>
                     </Spacer>
                 : null}
 
                 {menu.monday.cena ? 
                     <Spacer>
                         <Text>Cenas:</Text>
-                        <Text>{menu.monday.cena}</Text>
+                        <Text>{menu.monday.cena }</Text>
                     </Spacer>
                 : null}
 
                 <Spacer></Spacer>
-                <Text>{stateMenu.menu_json}</Text>
         </SafeAreaView>
     );
 };

@@ -8,20 +8,20 @@ const UserPrefReducer = (state, action) => {
 
     switch(action.type){
         case 'create-menu':
-            return {...state, menu_json: action.payload};
+            return action.payload;
         default:
             return state;
     }
 }
 
 const createMenu = dispatch => async (id) => {
+    console.log("entra a crear menu");
     const response = await smartFeedApi.get(`/menu/${id}`);
-    dispatch({type: 'create-menu', payload: response.data.data});
+    dispatch({type: 'create-menu', payload: JSON.parse(response.data.data.menu_json)});
 };
 
 const getUserPref = dispatch => async (id) => {
     const response = await smartFeedApi.get(`/userPref/${id}`);
-    console.log(JSON.parse(response.data.data.menu_json));
     dispatch({type: 'create-menu', payload: JSON.parse(response.data.data.menu_json)});
 };
 
