@@ -77,6 +77,7 @@ const MainScreen = () => {
     const [goal, setGoal] = useState("1");
     const [day, setDay] = useState('monday');
     const [meals, setMeals] = useState({});
+    const [a, setA] = useState({});
 
     const dict = {
         Lunes: 'monday',
@@ -86,7 +87,7 @@ const MainScreen = () => {
         Viernes: 'friday',
         Sabado: 'saturday',
         Domingo: 'sunday'
-    }
+    } 
 
     const getIdsMeals = () => {
         let aux = []
@@ -122,6 +123,9 @@ const MainScreen = () => {
             selectUser(stateAuth.userdata);
             getMenu(stateAuth.userdata)
             checkTypes();
+            getMeals();
+            console.log(meals)
+            //setIdsMealsToItems();
         }, [])
     );
 
@@ -177,6 +181,7 @@ const MainScreen = () => {
         putGoal(stateAuth.userdata, goal);
         createMenu(stateAuth.userdata);
         getMenu(stateAuth.userdata)
+        //console.log(meals);
     }
 
 
@@ -262,8 +267,6 @@ const MainScreen = () => {
 
     const dayChange = (index) => {
         setDay(dict[state.carouselItems[index].title]);
-        console.log(day);
-        console.log(menu[day].comida[0]);
     }
 
     const renderComida = ({ item }) => {
@@ -271,15 +274,15 @@ const MainScreen = () => {
             <View style={{
                 backgroundColor: '#c9c2af',
                 borderRadius: 30,
-                height: 80,
+                height: 150,
                 paddingTop: 15,
                 marginLeft: 15,
                 marginRight: 25,
                 borderColor: '#60656C',
                 borderWidth: 1
-            }}
+                }}
             >
-                <Text style={{ fontSize: 30, alignSelf: "center", color: '#FFFFFF' }}>{item.title}</Text>
+                <Text style={{ fontSize: 25, alignSelf: "center", color: '#FFFFFF' }}>{item.title}</Text>
             </View>
         )
     }
@@ -290,6 +293,33 @@ const MainScreen = () => {
         const response = await smartFeedApi.get(`/meals?mealIds=${JSON.stringify(ids)}`)
         console.log("MEALS", response.data.data);
         setMeals(response.data.data);
+    }
+
+    const setIdsMealsToItems = () => {
+        let arra = {};
+
+        for(let i=0; i<3; i++){
+            if(menu.monday.desayuno[i]===undefined){
+                menu.monday.desayuno[i] = 0;
+            }
+        }
+
+        for(let i=0; i<3; i++){
+            if(menu.monday.desayuno[i]!==0){
+                const obj = []
+                const aux= {
+                    id: menu.monday.desayuno[i],
+                }
+                obj.push(aux);
+                console.log(obj)
+                arra = {desayuno: obj}
+            }
+            
+        }
+
+        console.log(items.desayuno.carouselItems)
+        console.log(arra.desayuno);
+        setA(arra);
     }
 
     return (
@@ -365,7 +395,7 @@ const MainScreen = () => {
                             layout={"default"}
                             loop
                             firstItem={0}
-                            data={items.comida.carouselItems}
+                            data={items.almuerzo.carouselItems}
                             sliderWidth={Dimensions.get('window').width}
                             itemWidth={200}
                             renderItem={renderComida}
@@ -407,7 +437,7 @@ const MainScreen = () => {
                             layout={"default"}
                             loop
                             firstItem={0}
-                            data={items.comida.carouselItems}
+                            data={items.merienda.carouselItems}
                             sliderWidth={Dimensions.get('window').width}
                             itemWidth={200}
                             renderItem={renderComida}
