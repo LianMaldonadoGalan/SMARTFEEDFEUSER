@@ -3,9 +3,7 @@ import smartFeedApi from "../api/smartfeed";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from "@react-navigation/native";
 
-
 const UserPrefReducer = (state, action) => {
-
     switch(action.type){
         case 'create-menu':
             return action.payload;
@@ -15,7 +13,6 @@ const UserPrefReducer = (state, action) => {
 }
 
 const createMenu = dispatch => async (id) => {
-    console.log("entra a crear menu");
     const response = await smartFeedApi.get(`/menu/${id}`);
     dispatch({type: 'create-menu', payload: JSON.parse(response.data.data.menu_json)});
 };

@@ -68,7 +68,6 @@ const MainScreen = () => {
         },
     }
 
-
     const { state: stateData, selectUser, putGoal } = useContext(UserContext);
     const { state: stateAuth } = useContext(AuthContext);
     const { state: stateMenu, getUserPref, createMenu } = useContext(UserPrefContext);
@@ -77,15 +76,7 @@ const MainScreen = () => {
     const [goal, setGoal] = useState("1");
     const [day, setDay] = useState('monday');
     const [meals, setMeals] = useState([]);
-
-    useFocusEffect(
-        useCallback(() => {
-            selectUser(stateAuth.userdata);
-            getMenu(stateAuth.userdata)
-            checkTypes();
-            //getMeals();
-        }, [])
-    );
+    const [bandera, setBandera] = useState(false)
 
     const dict = {
         Lunes: 'monday',
@@ -96,6 +87,28 @@ const MainScreen = () => {
         Sabado: 'saturday',
         Domingo: 'sunday'
     } 
+
+    useEffect( () => {
+        getUserPref(stateAuth.userdata);
+        console.log(stateAuth);
+        getMenu(stateAuth.userdata);
+    },[])
+
+    useEffect( () => { 
+        if(menu.monday.desayuno[0] !== undefined){
+            checkTypes();
+            getMeals(); 
+            setMeals(meals);
+        }
+    }, [menu]);
+
+    useEffect( () => {
+        //console.log(meals);
+
+    }, [meals]);
+
+    
+
 
     const getIdsMeals = () => {
         let aux = []
@@ -115,7 +128,6 @@ const MainScreen = () => {
         });
 
         let ids = [...new Set(aux)];
-        //console.log(ids);
 
         return ids;
     }
@@ -156,7 +168,7 @@ const MainScreen = () => {
     const renderItem = ({ item }) => {
         return (
             <View style={{
-                backgroundColor: '#c9c2af',
+                backgroundColor: '#FFC300',
                 borderRadius: 30,
                 height: 80,
                 paddingTop: 15,
@@ -175,8 +187,8 @@ const MainScreen = () => {
     const onPress = () => {
         putGoal(stateAuth.userdata, goal);
         createMenu(stateAuth.userdata);
-        getMenu(stateAuth.userdata)
-        //console.log(meals);
+        getMenu(stateAuth.userdata);
+        //console.log(menu.monday);
     }
 
 
@@ -186,12 +198,6 @@ const MainScreen = () => {
             carouselItems: [
                 {
                     title: menu[day].desayuno[0]
-                },
-                {
-                    title: menu[day].desayuno[1]
-                },
-                {
-                    title: menu[day].desayuno[2]
                 }
             ]
         },
@@ -199,12 +205,6 @@ const MainScreen = () => {
             carouselItems: [
                 {
                     title: menu[day].almuerzo[0]
-                },
-                {
-                    title: menu[day].almuerzo[1]
-                },
-                {
-                    title: menu[day].almuerzo[2]
                 }
             ]
         },
@@ -212,12 +212,6 @@ const MainScreen = () => {
             carouselItems: [
                 {
                     title: menu[day].comida[0]
-                },
-                {
-                    title: menu[day].comida[1]
-                },
-                {
-                    title: menu[day].comida[2]
                 }
             ]
         },
@@ -225,12 +219,6 @@ const MainScreen = () => {
             carouselItems: [
                 {
                     title: menu[day].merienda[0]
-                },
-                {
-                    title: menu[day].merienda[1]
-                },
-                {
-                    title: menu[day].merienda[2]
                 }
             ]
         },
@@ -238,41 +226,13 @@ const MainScreen = () => {
             carouselItems: [
                 {
                     title: menu[day].cena[0]
-                },
-                {
-                    title: menu[day].cena[1]
-                },
-                {
-                    title: menu[day].cena[2]
                 }
             ]
         }
     }
 
-    const checkTypes = () => {
-        let types = ['desayuno', 'almuerzo', 'comida', 'merienda', 'cena'];
-
-        types.forEach(t => {
-            if (!Object.prototype.hasOwnProperty.call(menu.monday, t)) {
-                delete items[t];
-            }
-        })
-
-    }
-
     const dayChange = (index) => {
         setDay(dict[state.carouselItems[index].title]);
-    }
-
-    const auxString = () => {
-        const string = "holiwis"
-        const mealsArray = [...meals]
-        if (mealsArray.length !== 0) {
-            console.log("MEALSARRRAFSAEFWES");
-            const meal = mealsArray.find(m => m.id_meal === 642);
-            console.log("MEAL", meal);
-        }
-        return string
     }
 
     renderComida = ({ item }) => {
@@ -305,43 +265,32 @@ const MainScreen = () => {
 
         )
     }
+    
+    const checkTypes = () => {
+        let types = ['desayuno', 'almuerzo', 'comida', 'merienda', 'cena'];
+
+        types.forEach(t => {
+            if (!Object.prototype.hasOwnProperty.call(menu.monday, t)) {
+                delete items[t];
+            }
+        })
+
+    }
 
 
     const getMeals = async () => {
         let ids = getIdsMeals();
-        console.log("IDS", ids);
+        console.log("IDS", JSON.stringify(ids));
         const response = await smartFeedApi.get(`/meals?mealIds=${JSON.stringify(ids)}`)
-        console.log("MEALS", response.data.data.length);
+        console.log("sELLAMAAA");
         setMeals(response.data.data);
     }
 
-    const setIdsMealsToItems = () => {
-        let arra = {};
-
-        for(let i=0; i<3; i++){
-            if(menu.monday.desayuno[i]===undefined){
-                menu.monday.desayuno[i] = 0;
-            }
-        }
-
-        for(let i=0; i<3; i++){
-            if(menu.monday.desayuno[i]!==0){
-                const obj = []
-                const aux= {
-                    id: menu.monday.desayuno[i],
-                }
-                obj.push(aux);
-                console.log(obj)
-                arra = {desayuno: obj}
-            }
-            
-        }
-
-        console.log(items.desayuno.carouselItems)
-        console.log(arra.desayuno);
-        setA(arra);
+    const aux = () => {
+        getMenu(); 
+        getMeals();
     }
-
+    
     return (
         <>
             <Spacer3>
@@ -357,7 +306,6 @@ const MainScreen = () => {
                     sliderHeight={300}
                     activeSlideOffset={30}
                     onSnapToItem={(index) => dayChange(index)}
-                //style={{ position: "absolute"}}
                 />
             </Spacer3>
             <ScrollView>
@@ -381,10 +329,10 @@ const MainScreen = () => {
                     </Picker>
 
                     <Button title='Generar dieta' onPress={onPress} buttonStyle={styles.submitButton}></Button>
-                    <Button onPress={() => getMeals()} title='No que muy lion?' buttonStyle={styles.submitButton} />
+                    <Button onPress={() => aux()} title='No que muy lion?' buttonStyle={styles.submitButton} />
                 </View>
-
-                {menu[day].desayuno ?
+                        
+                {Object.prototype.hasOwnProperty.call(menu[day], 'desayuno') ?
                     <Spacer3>
                         <Spacer>
                             <Text>Desayunos:</Text>
@@ -392,7 +340,6 @@ const MainScreen = () => {
                         </Spacer>
                         <Carousel
                             layout={"default"}
-                             
                             firstItem={0}
                             data={items.desayuno.carouselItems.filter(x => typeof x.title === "number")}
                             sliderWidth={Dimensions.get('window').width}
@@ -405,15 +352,14 @@ const MainScreen = () => {
                     </Spacer3>
                     : null}
 
-                {menu[day].almuerzo ?
+                {Object.prototype.hasOwnProperty.call(menu[day], 'almuerzo')  ?
                     <Spacer3>
                         <Spacer>
                             <Text>Almuerzos:</Text>
                             <Text>{menu[day].almuerzo}</Text>
                         </Spacer>
                         <Carousel
-                            layout={"default"}
-                             
+                            layout={"default"} 
                             firstItem={0}
                             data={items.almuerzo.carouselItems.filter(x => typeof x.title === "number")}
                             sliderWidth={Dimensions.get('window').width}
@@ -426,15 +372,14 @@ const MainScreen = () => {
                     </Spacer3>
                     : null}
 
-                {menu[day].comida ?
+                {Object.prototype.hasOwnProperty.call(menu[day], 'comida')  ?
                     <Spacer3>
                         <Spacer>
                             <Text>Comidas:</Text>
                             <Text>{menu[day].comida}</Text>
                         </Spacer>
                         <Carousel
-                            layout={"default"}
-                             
+                            layout={"default"}                          
                             firstItem={0}
                             data={items.comida.carouselItems.filter(x => typeof x.title === "number")}
                             sliderWidth={Dimensions.get('window').width}
@@ -447,7 +392,7 @@ const MainScreen = () => {
                     </Spacer3>
                     : null}
 
-                {menu[day].merienda ?
+                {Object.prototype.hasOwnProperty.call(menu[day], 'merienda')  ?
                     <Spacer3>
                         <Spacer>
                             <Text>Meriendas:</Text>
@@ -455,7 +400,6 @@ const MainScreen = () => {
                         </Spacer>
                         <Carousel
                             layout={"default"}
-                             
                             firstItem={0}
                             data={items.merienda.carouselItems.filter(x => typeof x.title === "number")}
                             sliderWidth={Dimensions.get('window').width}
@@ -468,7 +412,7 @@ const MainScreen = () => {
                     </Spacer3>
                     : null}
 
-                {menu[day].cena ?
+                {Object.prototype.hasOwnProperty.call(menu[day], 'cena') ?
                     <Spacer3>
                         <Spacer>
                             <Text>Cenas:</Text>
@@ -476,7 +420,6 @@ const MainScreen = () => {
                         </Spacer>
                         <Carousel
                             layout={"default"}
-                             
                             firstItem={0}
                             data={items.cena.carouselItems.filter(x => typeof x.title === "number")}
                             sliderWidth={Dimensions.get('window').width}
@@ -510,7 +453,7 @@ const styles = StyleSheet.create({
     },
     submitButton: {
         marginTop: 10,
-        backgroundColor: '#2fa822',
+        backgroundColor: '#9CBEF9',
         borderRadius: 10,
         padding: 15,
         alignSelf: "center",
