@@ -95,7 +95,7 @@ const MainScreen = () => {
         Viernes: 'friday',
         Sabado: 'saturday',
         Domingo: 'sunday'
-    }
+    } 
 
     const getIdsMeals = () => {
         let aux = []
@@ -176,6 +176,7 @@ const MainScreen = () => {
         putGoal(stateAuth.userdata, goal);
         createMenu(stateAuth.userdata);
         getMenu(stateAuth.userdata)
+        //console.log(meals);
     }
 
 
@@ -261,8 +262,6 @@ const MainScreen = () => {
 
     const dayChange = (index) => {
         setDay(dict[state.carouselItems[index].title]);
-        console.log(day);
-        console.log(menu[day].comida[0]);
     }
 
     const auxString = () => {
@@ -314,6 +313,33 @@ const MainScreen = () => {
         const response = await smartFeedApi.get(`/meals?mealIds=${JSON.stringify(ids)}`)
         console.log("MEALS", response.data.data.length);
         setMeals(response.data.data);
+    }
+
+    const setIdsMealsToItems = () => {
+        let arra = {};
+
+        for(let i=0; i<3; i++){
+            if(menu.monday.desayuno[i]===undefined){
+                menu.monday.desayuno[i] = 0;
+            }
+        }
+
+        for(let i=0; i<3; i++){
+            if(menu.monday.desayuno[i]!==0){
+                const obj = []
+                const aux= {
+                    id: menu.monday.desayuno[i],
+                }
+                obj.push(aux);
+                console.log(obj)
+                arra = {desayuno: obj}
+            }
+            
+        }
+
+        console.log(items.desayuno.carouselItems)
+        console.log(arra.desayuno);
+        setA(arra);
     }
 
     return (
