@@ -70,7 +70,7 @@ const MainScreen = () => {
 
     const { state: stateData, selectUser, putGoal } = useContext(UserContext);
     const { state: stateAuth } = useContext(AuthContext);
-    const { state: stateMenu, getUserPref, createMenu } = useContext(UserPrefContext);
+    const { state: stateMenu, getUserPref } = useContext(UserPrefContext);
 
     const [menu, setMenu] = useState(o);
     const [goal, setGoal] = useState("1");
@@ -89,54 +89,21 @@ const MainScreen = () => {
     } 
 
     useEffect( () => {
+        selectUser(stateAuth.userdata);
         getUserPref(stateAuth.userdata);
+        checkTypes();
         console.log(stateAuth);
         getMenu(stateAuth.userdata);
     },[])
 
     useEffect( () => { 
         if(menu.monday.desayuno[0] !== undefined){
+            console.log("sekjhfjhaw");
             checkTypes();
             getMeals(); 
             setMeals(meals);
         }
     }, [menu]);
-
-    useEffect( () => {
-        //console.log(meals);
-
-    }, [meals]);
-
-    
-
-
-    const getIdsMeals = () => {
-        let aux = []
-
-        let days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
-        let types = ['desayuno', 'almuerzo', 'comida', 'merienda', 'cena']
-        days.forEach(d => {
-            types.forEach(t => {
-                if (Object.prototype.hasOwnProperty.call(menu[d], t)) {
-                    console.log("AQUIII", menu[d])
-                    console.log("TTT", t)
-                    menu[d][t].forEach(i => {
-                        aux.push(i)
-                    })
-                }
-            })
-        });
-
-        let ids = [...new Set(aux)];
-
-        return ids;
-    }
-
-    const getMenu = async (id) => {
-        const response = await smartFeedApi.get(`/userPref/${id}`);
-        setMenu(JSON.parse(response.data.data.menu_json));
-    };
-
 
     const state = {
         activeIndex: 0,
@@ -164,33 +131,6 @@ const MainScreen = () => {
             }
         ]
     }
-
-    const renderItem = ({ item }) => {
-        return (
-            <View style={{
-                backgroundColor: '#FFC300',
-                borderRadius: 30,
-                height: 80,
-                paddingTop: 15,
-                marginLeft: 15,
-                marginRight: 25,
-                borderColor: '#60656C',
-                borderWidth: 1
-            }}
-            >
-                <Text style={{ fontSize: 30, alignSelf: "center", color: '#FFFFFF' }}>{item.title}</Text>
-            </View>
-
-        )
-    }
-
-    const onPress = () => {
-        putGoal(stateAuth.userdata, goal);
-        createMenu(stateAuth.userdata);
-        getMenu(stateAuth.userdata);
-        //console.log(menu.monday);
-    }
-
 
     const items = {
         activeIndex: 0,
@@ -231,29 +171,19 @@ const MainScreen = () => {
         }
     }
 
-    const dayChange = (index) => {
-        setDay(dict[state.carouselItems[index].title]);
-    }
+    useEffect( () => {
+        //console.log(meals);
+
+    }, [meals]);   
 
     renderComida = ({ item }) => {
         return (
             <>
-                <View style={{
-                    backgroundColor: '#c9c2af',
-                    borderRadius: 30,
-                    height: 200,
-                    width: 260,
-                    paddingTop: 15,
-                    marginLeft: 15,
-                    marginRight: 25,
-                    borderColor: '#60656C',
-                    borderWidth: 1
-                }}
-                >
+                <View>
                     {meals.length !== 0 ?
                         <>
                             <TouchableOpacity>
-                                <Image source={{ uri: meals.find(m => m.id_meal === item.title).meal_photo }} style={{height: 160, width: 230}} />
+                                <Image source={{ uri: meals.find(m => m.id_meal === item.title).meal_photo }} style={{height: 190, width: 260}} />
                             </TouchableOpacity>
                             <Text style={{ fontSize: 15, alignSelf: "center", color: 'black' }}>{meals.find(m => m.id_meal === item.title).meal_name}</Text>
                         </>
@@ -264,6 +194,67 @@ const MainScreen = () => {
             </>
 
         )
+    }
+
+    const renderItem = ({ item }) => {
+        return (
+            <View style={{
+                backgroundColor: '#FFC300',
+                borderRadius: 30,
+                height: 80,
+                paddingTop: 15,
+                marginLeft: 15,
+                marginRight: 25,
+                borderColor: '#60656C',
+                borderWidth: 1
+            }}
+            >
+                <Text style={{ fontSize: 30, alignSelf: "center", color: '#FFFFFF' }}>{item.title}</Text>
+            </View>
+
+        )
+    }
+
+    const createMenu = async (id) => {
+        const response = await smartFeedApi.get(`/menu/${id}`);
+        setMenu(JSON.parse(response.data.data.menu_json));
+    };
+
+    //Conseguir los Ids de los meals
+    const getIdsMeals = () => {
+        let aux = []
+
+        let days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+        let types = ['desayuno', 'almuerzo', 'comida', 'merienda', 'cena']
+        days.forEach(d => {
+            types.forEach(t => {
+                if (Object.prototype.hasOwnProperty.call(menu[d], t)) {
+                    menu[d][t].forEach(i => {
+                        aux.push(i)
+                    })
+                }
+            })
+        });
+
+        let ids = [...new Set(aux)];
+
+        return ids;
+    }
+
+    const getMenu = async (id) => {
+        const response = await smartFeedApi.get(`/userPref/${id}`);
+        setMenu(JSON.parse(response.data.data.menu_json));
+    };
+
+    const onPress = () => {
+        putGoal(stateAuth.userdata, goal);
+        createMenu(stateAuth.userdata);
+        getMenu(stateAuth.userdata);
+        //console.log(menu.monday);
+    }
+
+    const dayChange = (index) => {
+        setDay(dict[state.carouselItems[index].title]);
     }
     
     const checkTypes = () => {
@@ -280,9 +271,7 @@ const MainScreen = () => {
 
     const getMeals = async () => {
         let ids = getIdsMeals();
-        console.log("IDS", JSON.stringify(ids));
         const response = await smartFeedApi.get(`/meals?mealIds=${JSON.stringify(ids)}`)
-        console.log("sELLAMAAA");
         setMeals(response.data.data);
     }
 
@@ -291,6 +280,7 @@ const MainScreen = () => {
         getMeals();
     }
     
+
     return (
         <>
             <Spacer3>
@@ -300,7 +290,7 @@ const MainScreen = () => {
                     firstItem={0}
                     data={state.carouselItems}
                     sliderWidth={Dimensions.get('window').width}
-                    itemWidth={200}
+                    itemWidth={300}
                     renderItem={renderItem}
                     activeSlideAlignment="center"
                     sliderHeight={300}
@@ -335,15 +325,14 @@ const MainScreen = () => {
                 {Object.prototype.hasOwnProperty.call(menu[day], 'desayuno') ?
                     <Spacer3>
                         <Spacer>
-                            <Text>Desayunos:</Text>
-                            <Text>{menu[day].desayuno}</Text>
+                            <Text style={{ alignSelf: "center"}}>Desayuno</Text>
                         </Spacer>
                         <Carousel
                             layout={"default"}
                             firstItem={0}
                             data={items.desayuno.carouselItems.filter(x => typeof x.title === "number")}
                             sliderWidth={Dimensions.get('window').width}
-                            itemWidth={200}
+                            itemWidth={250}
                             renderItem={renderComida}
                             activeSlideAlignment="center"
                             sliderHeight={300}
@@ -355,15 +344,14 @@ const MainScreen = () => {
                 {Object.prototype.hasOwnProperty.call(menu[day], 'almuerzo')  ?
                     <Spacer3>
                         <Spacer>
-                            <Text>Almuerzos:</Text>
-                            <Text>{menu[day].almuerzo}</Text>
+                        <Text style={{ alignSelf: "center"}}>Almuerzo</Text>
                         </Spacer>
                         <Carousel
                             layout={"default"} 
                             firstItem={0}
                             data={items.almuerzo.carouselItems.filter(x => typeof x.title === "number")}
                             sliderWidth={Dimensions.get('window').width}
-                            itemWidth={200}
+                            itemWidth={250}
                             renderItem={renderComida}
                             activeSlideAlignment="center"
                             sliderHeight={300}
@@ -375,15 +363,14 @@ const MainScreen = () => {
                 {Object.prototype.hasOwnProperty.call(menu[day], 'comida')  ?
                     <Spacer3>
                         <Spacer>
-                            <Text>Comidas:</Text>
-                            <Text>{menu[day].comida}</Text>
+                        <Text style={{ alignSelf: "center"}}>Comida</Text>
                         </Spacer>
                         <Carousel
                             layout={"default"}                          
                             firstItem={0}
                             data={items.comida.carouselItems.filter(x => typeof x.title === "number")}
                             sliderWidth={Dimensions.get('window').width}
-                            itemWidth={200}
+                            itemWidth={250}
                             renderItem={renderComida}
                             activeSlideAlignment="center"
                             sliderHeight={300}
@@ -395,15 +382,14 @@ const MainScreen = () => {
                 {Object.prototype.hasOwnProperty.call(menu[day], 'merienda')  ?
                     <Spacer3>
                         <Spacer>
-                            <Text>Meriendas:</Text>
-                            <Text>{menu[day].merienda}</Text>
+                        <Text style={{ alignSelf: "center"}}>Merienda</Text>
                         </Spacer>
                         <Carousel
                             layout={"default"}
                             firstItem={0}
                             data={items.merienda.carouselItems.filter(x => typeof x.title === "number")}
                             sliderWidth={Dimensions.get('window').width}
-                            itemWidth={200}
+                            itemWidth={250}
                             renderItem={renderComida}
                             activeSlideAlignment="center"
                             sliderHeight={300}
@@ -415,15 +401,14 @@ const MainScreen = () => {
                 {Object.prototype.hasOwnProperty.call(menu[day], 'cena') ?
                     <Spacer3>
                         <Spacer>
-                            <Text>Cenas:</Text>
-                            <Text>{menu[day].cena}</Text>
+                        <Text style={{ alignSelf: "center"}}>Cena</Text>
                         </Spacer>
                         <Carousel
                             layout={"default"}
                             firstItem={0}
                             data={items.cena.carouselItems.filter(x => typeof x.title === "number")}
                             sliderWidth={Dimensions.get('window').width}
-                            itemWidth={200}
+                            itemWidth={250}
                             renderItem={renderComida}
                             activeSlideAlignment="center"
                             sliderHeight={300}
