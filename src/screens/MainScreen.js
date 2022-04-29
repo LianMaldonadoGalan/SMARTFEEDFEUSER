@@ -76,7 +76,7 @@ const MainScreen = () => {
     const [menu, setMenu] = useState(o);
     const [goal, setGoal] = useState("1");
     const [day, setDay] = useState('monday');
-    const [meals, setMeals] = useState({});
+    const [meals, setMeals] = useState([]);
 
     const dict = {
         Lunes: 'monday',
@@ -122,6 +122,7 @@ const MainScreen = () => {
             selectUser(stateAuth.userdata);
             getMenu(stateAuth.userdata)
             checkTypes();
+            getMeals()
         }, [])
     );
 
@@ -266,7 +267,18 @@ const MainScreen = () => {
         console.log(menu[day].comida[0]);
     }
 
-    const renderComida = ({ item }) => {
+    const auxString = () => {
+        const string = "holiwis"
+        const mealsArray = [...meals]
+        if(mealsArray.length !== 0 ){
+            console.log("MEALSARRRAFSAEFWES");
+            const meal = mealsArray.find(m => m.id_meal === 642);
+            console.log("MEAL", meal);
+        }
+        return string
+    }
+
+    renderComida = ({ item }) => {
         return (
             <View style={{
                 backgroundColor: '#c9c2af',
@@ -279,16 +291,20 @@ const MainScreen = () => {
                 borderWidth: 1
             }}
             >
-                <Text style={{ fontSize: 30, alignSelf: "center", color: '#FFFFFF' }}>{item.title}</Text>
+                {meals.length !== 0? 
+                    <Text style={{ fontSize: 30, alignSelf: "center", color: '#FFFFFF' }}>{meals.find(m => m.id_meal === item.title).meal_name}</Text>
+                    : <Text style={{ fontSize: 30, alignSelf: "center", color: '#FFFFFF' }}>Loading</Text>
+                }
             </View>
         )
     }
+
 
     const getMeals = async () => {
         let ids = getIdsMeals();
         console.log("IDS", ids);
         const response = await smartFeedApi.get(`/meals?mealIds=${JSON.stringify(ids)}`)
-        console.log("MEALS", response.data.data);
+        console.log("MEALS", response.data.data.length);
         setMeals(response.data.data);
     }
 
@@ -344,7 +360,7 @@ const MainScreen = () => {
                             layout={"default"}
                             loop
                             firstItem={0}
-                            data={items.desayuno.carouselItems}
+                            data={items.desayuno.carouselItems.filter(x => typeof x.title === "number")}
                             sliderWidth={Dimensions.get('window').width}
                             itemWidth={200}
                             renderItem={renderComida}
@@ -365,7 +381,7 @@ const MainScreen = () => {
                             layout={"default"}
                             loop
                             firstItem={0}
-                            data={items.comida.carouselItems}
+                            data={items.almuerzo.carouselItems.filter(x => typeof x.title === "number")}
                             sliderWidth={Dimensions.get('window').width}
                             itemWidth={200}
                             renderItem={renderComida}
@@ -386,7 +402,7 @@ const MainScreen = () => {
                             layout={"default"}
                             loop
                             firstItem={0}
-                            data={items.comida.carouselItems}
+                            data={items.comida.carouselItems.filter(x => typeof x.title === "number")}
                             sliderWidth={Dimensions.get('window').width}
                             itemWidth={200}
                             renderItem={renderComida}
@@ -407,7 +423,7 @@ const MainScreen = () => {
                             layout={"default"}
                             loop
                             firstItem={0}
-                            data={items.comida.carouselItems}
+                            data={items.merienda.carouselItems.filter(x => typeof x.title === "number")}
                             sliderWidth={Dimensions.get('window').width}
                             itemWidth={200}
                             renderItem={renderComida}
@@ -428,7 +444,7 @@ const MainScreen = () => {
                             layout={"default"}
                             loop
                             firstItem={0}
-                            data={items.cena.carouselItems}
+                            data={items.cena.carouselItems.filter(x => typeof x.title === "number")}
                             sliderWidth={Dimensions.get('window').width}
                             itemWidth={200}
                             renderItem={renderComida}
