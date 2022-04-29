@@ -1,5 +1,5 @@
 import React, { Component, useCallback, useContext, useEffect, useState } from "react";
-import { StyleSheet, View, Dimensions, SliderComponent } from "react-native";
+import { StyleSheet, View, Dimensions, SliderComponen, Image, TouchableOpacity } from "react-native";
 import { Button, Text } from "react-native-elements";
 import Carousel from 'react-native-snap-carousel';
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -78,6 +78,15 @@ const MainScreen = () => {
     const [day, setDay] = useState('monday');
     const [meals, setMeals] = useState([]);
 
+    useFocusEffect(
+        useCallback(() => {
+            selectUser(stateAuth.userdata);
+            getMenu(stateAuth.userdata)
+            checkTypes();
+            //getMeals();
+        }, [])
+    );
+
     const dict = {
         Lunes: 'monday',
         Martes: 'tuesday',
@@ -115,17 +124,6 @@ const MainScreen = () => {
         const response = await smartFeedApi.get(`/userPref/${id}`);
         setMenu(JSON.parse(response.data.data.menu_json));
     };
-
-
-    useFocusEffect(
-        useCallback(() => {
-            selectUser(stateAuth.userdata);
-            getMenu(stateAuth.userdata)
-            checkTypes();
-            getMeals()
-        }, [])
-    );
-
 
 
     const state = {
@@ -270,7 +268,7 @@ const MainScreen = () => {
     const auxString = () => {
         const string = "holiwis"
         const mealsArray = [...meals]
-        if(mealsArray.length !== 0 ){
+        if (mealsArray.length !== 0) {
             console.log("MEALSARRRAFSAEFWES");
             const meal = mealsArray.find(m => m.id_meal === 642);
             console.log("MEAL", meal);
@@ -280,22 +278,32 @@ const MainScreen = () => {
 
     renderComida = ({ item }) => {
         return (
-            <View style={{
-                backgroundColor: '#c9c2af',
-                borderRadius: 30,
-                height: 80,
-                paddingTop: 15,
-                marginLeft: 15,
-                marginRight: 25,
-                borderColor: '#60656C',
-                borderWidth: 1
-            }}
-            >
-                {meals.length !== 0? 
-                    <Text style={{ fontSize: 30, alignSelf: "center", color: '#FFFFFF' }}>{meals.find(m => m.id_meal === item.title).meal_name}</Text>
-                    : <Text style={{ fontSize: 30, alignSelf: "center", color: '#FFFFFF' }}>Loading</Text>
-                }
-            </View>
+            <>
+                <View style={{
+                    backgroundColor: '#c9c2af',
+                    borderRadius: 30,
+                    height: 200,
+                    width: 260,
+                    paddingTop: 15,
+                    marginLeft: 15,
+                    marginRight: 25,
+                    borderColor: '#60656C',
+                    borderWidth: 1
+                }}
+                >
+                    {meals.length !== 0 ?
+                        <>
+                            <TouchableOpacity>
+                                <Image source={{ uri: meals.find(m => m.id_meal === item.title).meal_photo }} style={{height: 160, width: 230}} />
+                            </TouchableOpacity>
+                            <Text style={{ fontSize: 15, alignSelf: "center", color: 'black' }}>{meals.find(m => m.id_meal === item.title).meal_name}</Text>
+                        </>
+
+                        : <Text style={{ fontSize: 30, alignSelf: "center", color: '#FFFFFF' }}>Loading</Text>
+                    }
+                </View>
+            </>
+
         )
     }
 
@@ -358,7 +366,7 @@ const MainScreen = () => {
                         </Spacer>
                         <Carousel
                             layout={"default"}
-                            loop
+                             
                             firstItem={0}
                             data={items.desayuno.carouselItems.filter(x => typeof x.title === "number")}
                             sliderWidth={Dimensions.get('window').width}
@@ -379,7 +387,7 @@ const MainScreen = () => {
                         </Spacer>
                         <Carousel
                             layout={"default"}
-                            loop
+                             
                             firstItem={0}
                             data={items.almuerzo.carouselItems.filter(x => typeof x.title === "number")}
                             sliderWidth={Dimensions.get('window').width}
@@ -400,7 +408,7 @@ const MainScreen = () => {
                         </Spacer>
                         <Carousel
                             layout={"default"}
-                            loop
+                             
                             firstItem={0}
                             data={items.comida.carouselItems.filter(x => typeof x.title === "number")}
                             sliderWidth={Dimensions.get('window').width}
@@ -421,7 +429,7 @@ const MainScreen = () => {
                         </Spacer>
                         <Carousel
                             layout={"default"}
-                            loop
+                             
                             firstItem={0}
                             data={items.merienda.carouselItems.filter(x => typeof x.title === "number")}
                             sliderWidth={Dimensions.get('window').width}
@@ -442,7 +450,7 @@ const MainScreen = () => {
                         </Spacer>
                         <Carousel
                             layout={"default"}
-                            loop
+                             
                             firstItem={0}
                             data={items.cena.carouselItems.filter(x => typeof x.title === "number")}
                             sliderWidth={Dimensions.get('window').width}
