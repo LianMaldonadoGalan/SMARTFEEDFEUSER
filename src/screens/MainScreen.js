@@ -93,7 +93,7 @@ const MainScreen = () => {
         getUserPref(stateAuth.userdata);
         checkTypes();
         console.log(stateAuth);
-        getMenu(stateAuth.userdata);
+        getMenu(stateAuth.userdata); 
     },[])
 
     useEffect( () => { 
@@ -101,7 +101,6 @@ const MainScreen = () => {
             console.log("sekjhfjhaw");
             checkTypes();
             getMeals(); 
-            setMeals(meals);
         }
     }, [menu]);
 
@@ -171,10 +170,7 @@ const MainScreen = () => {
         }
     }
 
-    useEffect( () => {
-        //console.log(meals);
-
-    }, [meals]);   
+    
 
     renderComida = ({ item }) => {
         return (
@@ -217,7 +213,10 @@ const MainScreen = () => {
 
     const createMenu = async (id) => {
         const response = await smartFeedApi.get(`/menu/${id}`);
-        setMenu(JSON.parse(response.data.data.menu_json));
+        const x = JSON.parse(response.data.data.menu_json)
+        setMeals([]);
+        setMenu(x);
+        
     };
 
     //Conseguir los Ids de los meals
@@ -249,7 +248,7 @@ const MainScreen = () => {
     const onPress = () => {
         putGoal(stateAuth.userdata, goal);
         createMenu(stateAuth.userdata);
-        getMenu(stateAuth.userdata);
+        //getMenu(stateAuth.userdata);
         //console.log(menu.monday);
     }
 
@@ -270,16 +269,12 @@ const MainScreen = () => {
 
 
     const getMeals = async () => {
+        console.log("Se mete a get meals");
         let ids = getIdsMeals();
+        console.log(ids);
         const response = await smartFeedApi.get(`/meals?mealIds=${JSON.stringify(ids)}`)
         setMeals(response.data.data);
     }
-
-    const aux = () => {
-        getMenu(); 
-        getMeals();
-    }
-    
 
     return (
         <>
@@ -318,8 +313,7 @@ const MainScreen = () => {
                         <Picker.Item label="Subir" value="3" />
                     </Picker>
 
-                    <Button title='Generar dieta' onPress={onPress} buttonStyle={styles.submitButton}></Button>
-                    <Button onPress={() => aux()} title='No que muy lion?' buttonStyle={styles.submitButton} />
+                    <Button title='Generar dieta' onPress={() => onPress()} buttonStyle={styles.submitButton}></Button>
                 </View>
                         
                 {Object.prototype.hasOwnProperty.call(menu[day], 'desayuno') ?
