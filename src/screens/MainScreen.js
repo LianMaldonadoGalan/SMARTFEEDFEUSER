@@ -13,6 +13,7 @@ import { useFocusEffect } from "@react-navigation/core";
 import smartFeedApi from "../api/smartfeed";
 import { ScrollView } from "react-native-gesture-handler";
 import Spacer3 from "../../components/Spacer3";
+import { set } from "react-native-reanimated";
 
 
 const MainScreen = () => {
@@ -77,6 +78,7 @@ const MainScreen = () => {
     const [day, setDay] = useState('monday');
     const [meals, setMeals] = useState([]);
     const [bandera, setBandera] = useState(false)
+    const [stateItems, setStateItems] = useState(items);
 
     const dict = {
         Lunes: 'monday',
@@ -87,8 +89,14 @@ const MainScreen = () => {
         Sabado: 'saturday',
         Domingo: 'sunday'
     } 
+    const items = {
+        activeIndex: 0,
+        
+    }
 
     useEffect( () => {
+        setMenu(o);
+        setMeals([]);
         selectUser(stateAuth.userdata);
         getUserPref(stateAuth.userdata);
         checkTypes();
@@ -97,12 +105,27 @@ const MainScreen = () => {
     },[])
 
     useEffect( () => { 
-        if(menu.monday.desayuno[0] !== undefined){
-            console.log("sekjhfjhaw");
+        if(menu.monday.comida[0] !== undefined){
+            console.log("UseEffect del meu");
+            selectUser(stateAuth.userdata);
             checkTypes();
             getMeals(); 
+            setStateItems(itemsDinamycs());
         }
     }, [menu]);
+
+    useEffect( () => { 
+        console.log("UseEffect del stateItems")
+    }, [stateItems]);
+
+    useEffect( () => { 
+        console.log("UseEffect del stateDATAA")
+    }, [stateData]);
+
+    useEffect( () => { 
+        console.log(day, menu[day])
+        setStateItems(itemsDinamycs());
+    }, [day]);
 
     const state = {
         activeIndex: 0,
@@ -131,46 +154,131 @@ const MainScreen = () => {
         ]
     }
 
-    const items = {
-        activeIndex: 0,
-        desayuno: {
-            carouselItems: [
-                {
-                    title: menu[day].desayuno[0]
+    const itemsDinamycs = () => {
+        console.log(stateData.meals_qty);
+        if(stateData.meals_qty === 2){
+            const items = {
+                activeIndex: 0,
+                desayuno: {
+                    carouselItems: [
+                        {
+                            title: menu[day].desayuno[0]
+                        }
+                    ]
+                },
+                comida: {
+                    carouselItems: [
+                        {
+                            title: menu[day].comida[0]
+                        }
+                    ]
                 }
-            ]
-        },
-        almuerzo: {
-            carouselItems: [
-                {
-                    title: menu[day].almuerzo[0]
-                }
-            ]
-        },
-        comida: {
-            carouselItems: [
-                {
-                    title: menu[day].comida[0]
-                }
-            ]
-        },
-        merienda: {
-            carouselItems: [
-                {
-                    title: menu[day].merienda[0]
-                }
-            ]
-        },
-        cena: {
-            carouselItems: [
-                {
-                    title: menu[day].cena[0]
-                }
-            ]
+            }
+            return items
         }
-    }
-
-    
+        else if(stateData.meals_qty === 3){
+            const items = {
+                activeIndex: 0,
+                desayuno: {
+                    carouselItems: [
+                        {
+                            title: menu[day].desayuno[0]
+                        }
+                    ]
+                },
+                comida: {
+                    carouselItems: [
+                        {
+                            title: menu[day].comida[0]
+                        }
+                    ]
+                },
+                cena: {
+                    carouselItems: [
+                        {
+                            title: menu[day].cena[0]
+                        }
+                    ]
+                }
+            }
+            return items
+        }
+        else if(stateData.meals_qty === 4){
+            const items = {
+                activeIndex: 0,
+                desayuno: {
+                    carouselItems: [
+                        {
+                            title: menu[day].desayuno[0]
+                        }
+                    ]
+                },
+                almuerzo: {
+                    carouselItems: [
+                        {
+                            title: menu[day].almuerzo[0]
+                        }
+                    ]
+                },
+                comida: {
+                    carouselItems: [
+                        {
+                            title: menu[day].comida[0]
+                        }
+                    ]
+                },
+                cena: {
+                    carouselItems: [
+                        {
+                            title: menu[day].cena[0]
+                        }
+                    ]
+                }
+            }
+            return items
+        }
+        else if(stateData.meals_qty === 5){
+            const items = {
+                activeIndex: 0,
+                desayuno: {
+                    carouselItems: [
+                        {
+                            title: menu[day].desayuno[0]
+                        }
+                    ]
+                },
+                almuerzo: {
+                    carouselItems: [
+                        {
+                            title: menu[day].almuerzo[0]
+                        }
+                    ]
+                },
+                comida: {
+                    carouselItems: [
+                        {
+                            title: menu[day].comida[0]
+                        }
+                    ]
+                },
+                merienda: {
+                    carouselItems: [
+                        {
+                            title: menu[day].merienda[0]
+                        }
+                    ]
+                },
+                cena: {
+                    carouselItems: [
+                        {
+                            title: menu[day].cena[0]
+                        }
+                    ]
+                }
+            }
+            return items
+        }
+    }    
 
     renderComida = ({ item }) => {
         return (
@@ -216,7 +324,6 @@ const MainScreen = () => {
         const x = JSON.parse(response.data.data.menu_json)
         setMeals([]);
         setMenu(x);
-        
     };
 
     //Conseguir los Ids de los meals
@@ -224,7 +331,21 @@ const MainScreen = () => {
         let aux = []
 
         let days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
-        let types = ['desayuno', 'almuerzo', 'comida', 'merienda', 'cena']
+        let types = [];
+    
+        if(stateData.meals_qty == 2){
+            types = ['desayuno','comida'];
+        }
+        else if(stateData.meals_qty == 3){
+            types = ['desayuno','comida','cena'];
+        }
+        else if(stateData.meals_qty == 4){
+            types = ['desayuno', 'almuerzo', 'comida','cena'];
+        }
+        else if(stateData.meals_qty == 5){
+            types = ['desayuno', 'almuerzo', 'comida', 'merienda', 'cena'];
+        }
+        
         days.forEach(d => {
             types.forEach(t => {
                 if (Object.prototype.hasOwnProperty.call(menu[d], t)) {
@@ -257,14 +378,26 @@ const MainScreen = () => {
     }
     
     const checkTypes = () => {
-        let types = ['desayuno', 'almuerzo', 'comida', 'merienda', 'cena'];
+        let types= [];
+        if(stateData.meals_qty == 2){
+            types = ['desayuno','comida'];
+        }
+        else if(stateData.meals_qty == 3){
+            types = ['desayuno','comida','cena'];
+        }
+        else if(stateData.meals_qty == 4){
+            types = ['desayuno', 'almuerzo', 'comida','cena'];
+        }
+        else if(stateData.meals_qty == 5){
+            types = ['desayuno', 'almuerzo', 'comida', 'merienda', 'cena'];
+        }
 
         types.forEach(t => {
             if (!Object.prototype.hasOwnProperty.call(menu.monday, t)) {
-                delete items[t];
+                delete stateItems[t];
             }
         })
-
+        setStateItems(itemsDinamycs());
     }
 
 
@@ -321,17 +454,21 @@ const MainScreen = () => {
                         <Spacer>
                             <Text style={{ alignSelf: "center"}}>Desayuno</Text>
                         </Spacer>
-                        <Carousel
-                            layout={"default"}
-                            firstItem={0}
-                            data={items.desayuno.carouselItems.filter(x => typeof x.title === "number")}
-                            sliderWidth={Dimensions.get('window').width}
-                            itemWidth={250}
-                            renderItem={renderComida}
-                            activeSlideAlignment="center"
-                            sliderHeight={300}
-                            activeSlideOffset={30}
-                        />
+                        {stateItems ? 
+                            <Carousel
+                                layout={"default"}
+                                firstItem={0}
+                                data={stateItems.desayuno.carouselItems.filter(x => typeof x.title === "number")}
+                                sliderWidth={Dimensions.get('window').width}
+                                itemWidth={250}
+                                renderItem={renderComida}
+                                activeSlideAlignment="center"
+                                sliderHeight={300}
+                                activeSlideOffset={30}
+                            /> 
+                            : null
+                        }
+                        
                     </Spacer3>
                     : null}
 
@@ -340,17 +477,20 @@ const MainScreen = () => {
                         <Spacer>
                         <Text style={{ alignSelf: "center"}}>Almuerzo</Text>
                         </Spacer>
-                        <Carousel
-                            layout={"default"} 
-                            firstItem={0}
-                            data={items.almuerzo.carouselItems.filter(x => typeof x.title === "number")}
-                            sliderWidth={Dimensions.get('window').width}
-                            itemWidth={250}
-                            renderItem={renderComida}
-                            activeSlideAlignment="center"
-                            sliderHeight={300}
-                            activeSlideOffset={30}
-                        />
+                        {stateItems ? 
+                            <Carousel
+                                layout={"default"} 
+                                firstItem={0}
+                                data={stateItems.almuerzo.carouselItems.filter(x => typeof x.title === "number")}
+                                sliderWidth={Dimensions.get('window').width}
+                                itemWidth={250}
+                                renderItem={renderComida}
+                                activeSlideAlignment="center"
+                                sliderHeight={300}
+                                activeSlideOffset={30}
+                            />
+                            : null
+                        }
                     </Spacer3>
                     : null}
 
@@ -359,17 +499,20 @@ const MainScreen = () => {
                         <Spacer>
                         <Text style={{ alignSelf: "center"}}>Comida</Text>
                         </Spacer>
-                        <Carousel
-                            layout={"default"}                          
-                            firstItem={0}
-                            data={items.comida.carouselItems.filter(x => typeof x.title === "number")}
-                            sliderWidth={Dimensions.get('window').width}
-                            itemWidth={250}
-                            renderItem={renderComida}
-                            activeSlideAlignment="center"
-                            sliderHeight={300}
-                            activeSlideOffset={30}
-                        />
+                        {stateItems ? 
+                            <Carousel
+                                layout={"default"}                          
+                                firstItem={0}
+                                data={stateItems.comida.carouselItems.filter(x => typeof x.title === "number")}
+                                sliderWidth={Dimensions.get('window').width}
+                                itemWidth={250}
+                                renderItem={renderComida}
+                                activeSlideAlignment="center"
+                                sliderHeight={300}
+                                activeSlideOffset={30}
+                            />
+                            : null
+                        }
                     </Spacer3>
                     : null}
 
@@ -378,17 +521,21 @@ const MainScreen = () => {
                         <Spacer>
                         <Text style={{ alignSelf: "center"}}>Merienda</Text>
                         </Spacer>
-                        <Carousel
-                            layout={"default"}
-                            firstItem={0}
-                            data={items.merienda.carouselItems.filter(x => typeof x.title === "number")}
-                            sliderWidth={Dimensions.get('window').width}
-                            itemWidth={250}
-                            renderItem={renderComida}
-                            activeSlideAlignment="center"
-                            sliderHeight={300}
-                            activeSlideOffset={30}
-                        />
+                        {stateItems ? 
+                            <Carousel
+                                layout={"default"}
+                                firstItem={0}
+                                data={stateItems.merienda.carouselItems.filter(x => typeof x.title === "number")}
+                                sliderWidth={Dimensions.get('window').width}
+                                itemWidth={250}
+                                renderItem={renderComida}
+                                activeSlideAlignment="center"
+                                sliderHeight={300}
+                                activeSlideOffset={30}
+                            />
+                            : null
+                        }
+                        
                     </Spacer3>
                     : null}
 
@@ -397,17 +544,20 @@ const MainScreen = () => {
                         <Spacer>
                         <Text style={{ alignSelf: "center"}}>Cena</Text>
                         </Spacer>
-                        <Carousel
-                            layout={"default"}
-                            firstItem={0}
-                            data={items.cena.carouselItems.filter(x => typeof x.title === "number")}
-                            sliderWidth={Dimensions.get('window').width}
-                            itemWidth={250}
-                            renderItem={renderComida}
-                            activeSlideAlignment="center"
-                            sliderHeight={300}
-                            activeSlideOffset={30}
-                        />
+                        {stateItems ? 
+                            <Carousel
+                                layout={"default"}
+                                firstItem={0}
+                                data={stateItems.cena.carouselItems.filter(x => typeof x.title === "number")}
+                                sliderWidth={Dimensions.get('window').width}
+                                itemWidth={250}
+                                renderItem={renderComida}
+                                activeSlideAlignment="center"
+                                sliderHeight={300}
+                                activeSlideOffset={30}
+                            />
+                            : null
+                        }
                     </Spacer3>
                     : null}
 
