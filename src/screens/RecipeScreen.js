@@ -9,7 +9,7 @@ import Spacer from '../../components/Spacer';
 import smartFeedApi from "../api/smartfeed";
 import { Context as IngredientContext } from '../context/IngredientContext';
 
-const RecipeScreen = ({route}) => {
+const RecipeScreen = ({ route }) => {
 
     const { state } = useContext(IngredientContext);
 

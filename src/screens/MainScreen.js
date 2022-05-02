@@ -16,7 +16,7 @@ import Spacer3 from "../../components/Spacer3";
 import { set } from "react-native-reanimated";
 
 
-const MainScreen = () => {
+const MainScreen = ({ navigation }) => {
     const o = {
         monday: {
             desayuno: [],
@@ -286,7 +286,7 @@ const MainScreen = () => {
                 <View>
                     {meals.length !== 0 ?
                         <>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={() => navigation.navigate('Recipe',  {result: stateAuth.userdata})}>
                                 <Image source={{ uri: meals.find(m => m.id_meal === item.title).meal_photo }} style={{height: 190, width: 260}} />
                             </TouchableOpacity>
                             <Text style={{ fontSize: 15, alignSelf: "center", color: 'black' }}>{meals.find(m => m.id_meal === item.title).meal_name}</Text>
@@ -324,6 +324,7 @@ const MainScreen = () => {
         const x = JSON.parse(response.data.data.menu_json)
         setMeals([]);
         setMenu(x);
+        setStateItems(items);
     };
 
     //Conseguir los Ids de los meals
