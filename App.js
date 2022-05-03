@@ -17,6 +17,7 @@ import IonIcons from 'react-native-vector-icons/Ionicons';
 import { Provider as AuthProvider } from './src/context/AuthContext';
 import { Provider as UserDataProvider } from './src/context/UserDataContext';
 import { Provider as IngredientProvider } from './src/context/IngredientContext';
+import { Provider as UserPrefProvider } from './src/context/UserPrefContext';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -87,24 +88,26 @@ export default function App() {
   return (
     
     <NavigationContainer>
-      <UserDataProvider>
-      <IngredientProvider>
-        <AuthProvider>
-        {isLoggedIn ? (
-          Root()
-        ) : (
-          
-          <Stack.Navigator>
-            <Stack.Screen name="ResolveAuth" component={ResolveAuthScreen} options={{ headerShown: false }}/>
-            <Stack.Screen name="Signin" component={SigninScreen} options={{ headerShown: false }}  />
-            <Stack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="Root" component={Root} options={{ headerShown: false }}/>
-          </Stack.Navigator>
-        )
-        }
-        </AuthProvider>
-        </IngredientProvider>
-      </UserDataProvider>
+      <UserPrefProvider>
+        <UserDataProvider>
+        <IngredientProvider>
+          <AuthProvider>
+          {isLoggedIn ? (
+            Root()
+          ) : (
+            
+            <Stack.Navigator>
+              <Stack.Screen name="ResolveAuth" component={ResolveAuthScreen} options={{ headerShown: false }}/>
+              <Stack.Screen name="Signin" component={SigninScreen} options={{ headerShown: false }}  />
+              <Stack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="Root" component={Root} options={{ headerShown: false }}/>
+            </Stack.Navigator>
+          )
+          }
+          </AuthProvider>
+          </IngredientProvider>
+        </UserDataProvider>
+      </UserPrefProvider>
     </NavigationContainer>
   );
 }

@@ -112,7 +112,7 @@ const HealthData = () => {
                             </Spacer2>
                         </View>
 
-                        <Text style={styles.label3}>Cantidad de comidas por dia:</Text>
+                        {/*<Text style={styles.label3}>Cantidad de comidas por dia:</Text>
                         <View style={{borderRadius: 10, borderWidth: 1, borderColor: '#bdc3c7', overflow: 'hidden', marginHorizontal: 22}}>
                             <Spacer2>
                                 <Picker
@@ -129,7 +129,7 @@ const HealthData = () => {
 
                                 </Picker>
                             </Spacer2>
-                        </View>
+                        </View>*/}
                         
                         <Spacer2>
                             <Button

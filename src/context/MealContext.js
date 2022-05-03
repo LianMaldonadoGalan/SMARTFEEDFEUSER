@@ -20,4 +20,8 @@ const fetchMeals = dispatch => async () => {
     dispatch({type: 'fetch_meals', payload: response.data.data});
 };
 
-export const {Context, Provider } = createDataContext(MealReducer, {fetchMeals}, []);
+export const {Context, Provider } = createDataContext(
+    MealReducer, 
+    {fetchMeals}, 
+    []
+);
