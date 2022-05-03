@@ -335,7 +335,6 @@ const MainScreen = () => {
                     </Picker>
 
                     <Button title='Generar dieta' onPress={() => onPress()} buttonStyle={styles.submitButton}></Button>
-                    <Button title='Gene' onPress={() => console.log(stateData.meals_qty)} buttonStyle={styles.submitButton}></Button>
                 </View>
 
                 {Object.prototype.hasOwnProperty.call(menu[day], 'desayuno') ?

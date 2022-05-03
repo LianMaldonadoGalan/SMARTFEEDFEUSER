@@ -19,7 +19,7 @@ const CustomDrawer = (props) => {
                 <DrawerItem
                 label= "Cerrar Sesion"
                 icon={() => <IonIcons name="close-circle" size={35} color='#60656C'/>}
-                style={{marginTop: 140, borderTopWidth: 1, borderColor:'#60656C' }}
+                style={{marginTop: 175, borderTopWidth: 1, borderColor:'#60656C' }}
                 labelStyle= {{marginLeft: -25}}
                 onPress={signout}
                 />
