@@ -93,8 +93,10 @@ const MainScreen = () => {
     }
 
     useEffect(() => {
-        setMenu(o);
-        setMeals([]);
+        if(menu.monday[0] !== undefined && meals.length !== 0 ){
+            setMenu(o);
+            setMeals([]);
+        }
         selectUser(stateAuth.userdata);
         console.log(stateAuth);
         getMenu(stateAuth.userdata);
