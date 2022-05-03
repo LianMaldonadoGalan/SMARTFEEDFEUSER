@@ -10,13 +10,14 @@ import { Context as MealContext } from '../context/MealContext';
 import { Picker } from "@react-native-picker/picker";
 import Spacer from '../../components/Spacer';
 import { useFocusEffect } from "@react-navigation/core";
+import { useNavigation } from "@react-navigation/native";
 import smartFeedApi from "../api/smartfeed";
 import { ScrollView } from "react-native-gesture-handler";
 import Spacer3 from "../../components/Spacer3";
 import { set } from "react-native-reanimated";
 
 
-const MainScreen = ({ navigation }) => {
+const MainScreen = () => {
     const o = {
         monday: {
             desayuno: [],
@@ -79,6 +80,8 @@ const MainScreen = ({ navigation }) => {
     const [meals, setMeals] = useState([]);
     const [bandera, setBandera] = useState(false)
     const [stateItems, setStateItems] = useState(items);
+
+    const navigation = useNavigation();
 
     const dict = {
         Lunes: 'monday',
@@ -281,12 +284,13 @@ const MainScreen = ({ navigation }) => {
     }    
 
     renderComida = ({ item }) => {
+        const result = meals.find(m => m.id_meal === item.title);
         return (
             <>
                 <View>
                     {meals.length !== 0 ?
                         <>
-                            <TouchableOpacity onPress={() => navigation.navigate('Recipe',  {result: stateAuth.userdata})}>
+                            <TouchableOpacity onPress={() => navigation.navigate('Recipe',  {result})}>
                                 <Image source={{ uri: meals.find(m => m.id_meal === item.title).meal_photo }} style={{height: 190, width: 260}} />
                             </TouchableOpacity>
                             <Text style={{ fontSize: 15, alignSelf: "center", color: 'black' }}>{meals.find(m => m.id_meal === item.title).meal_name}</Text>
