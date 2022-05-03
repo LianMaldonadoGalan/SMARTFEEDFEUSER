@@ -102,18 +102,16 @@ const MainScreen = () => {
         setMeals([]);
         selectUser(stateAuth.userdata);
         getUserPref(stateAuth.userdata);
-        checkTypes();
+        //checkTypes();
         console.log(stateAuth);
         getMenu(stateAuth.userdata); 
     },[])
 
     useEffect( () => { 
-        if(menu.monday.comida[0] !== undefined){
-            console.log("UseEffect del meu");
-            selectUser(stateAuth.userdata);
+        if(menu.monday.comida[0] !== undefined && stateData.meals_qty !== undefined){
+            console.log("UseEffect del menu",menu.monday);
             checkTypes();
-            getMeals(); 
-            setStateItems(itemsDinamycs());
+            getMeals();
         }
     }, [menu]);
 
@@ -122,13 +120,20 @@ const MainScreen = () => {
     }, [stateItems]);
 
     useEffect( () => { 
-        console.log("UseEffect del stateDATAA")
+        console.log("UseEffect del stateDATAA");
+        if(menu.monday.comida[0] && stateData.meals_qty !== undefined ){
+            getMenu(stateAuth.userdata); 
+            setStateItems(itemsDinamycs());
+        }
     }, [stateData]);
 
     useEffect( () => { 
-        console.log(day, menu[day])
-        setStateItems(itemsDinamycs());
+        //console.log(day, menu[day])
     }, [day]);
+
+    useEffect( () => { 
+        console.log("Efecto del meals",meals)
+    }, [meals]);
 
     const state = {
         activeIndex: 0,
@@ -158,7 +163,10 @@ const MainScreen = () => {
     }
 
     const itemsDinamycs = () => {
-        console.log(stateData.meals_qty);
+        console.log("itemsDINAMYC", stateData);
+        console.log(menu);
+        getMenu(stateAuth.userdata);
+        console.log(meals);
         if(stateData.meals_qty === 2){
             const items = {
                 activeIndex: 0,
@@ -281,6 +289,7 @@ const MainScreen = () => {
             }
             return items
         }
+        checkTypes();
     }    
 
     renderComida = ({ item }) => {
@@ -288,7 +297,7 @@ const MainScreen = () => {
         return (
             <>
                 <View>
-                    {meals.length !== 0 ?
+                    {meals.length !== 0  ?
                         <>
                             <TouchableOpacity onPress={() => navigation.navigate('Recipe',  {result})}>
                                 <Image source={{ uri: meals.find(m => m.id_meal === item.title).meal_photo }} style={{height: 190, width: 260}} />
@@ -328,7 +337,7 @@ const MainScreen = () => {
         const x = JSON.parse(response.data.data.menu_json)
         setMeals([]);
         setMenu(x);
-        setStateItems(items);
+        //setStateItems(items);
     };
 
     //Conseguir los Ids de los meals
@@ -337,6 +346,8 @@ const MainScreen = () => {
 
         let days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
         let types = [];
+
+        console.log("Se mete a getIdsMeals", stateData.meals_qty);
     
         if(stateData.meals_qty == 2){
             types = ['desayuno','comida'];
@@ -353,9 +364,10 @@ const MainScreen = () => {
         
         days.forEach(d => {
             types.forEach(t => {
+                console.log(t);
                 if (Object.prototype.hasOwnProperty.call(menu[d], t)) {
                     menu[d][t].forEach(i => {
-                        aux.push(i)
+                        aux.push(i);
                     })
                 }
             })
@@ -402,12 +414,13 @@ const MainScreen = () => {
                 delete stateItems[t];
             }
         })
-        setStateItems(itemsDinamycs());
+        console.log("checkTypes",stateItems)
+        
     }
 
 
     const getMeals = async () => {
-        console.log("Se mete a get meals");
+        console.log("Se mete a get meals", menu);
         let ids = getIdsMeals();
         console.log(ids);
         const response = await smartFeedApi.get(`/meals?mealIds=${JSON.stringify(ids)}`)
@@ -452,6 +465,7 @@ const MainScreen = () => {
                     </Picker>
 
                     <Button title='Generar dieta' onPress={() => onPress()} buttonStyle={styles.submitButton}></Button>
+                    <Button title='Gene' onPress={() => console.log(stateData.meals_qty)} buttonStyle={styles.submitButton}></Button>
                 </View>
                         
                 {Object.prototype.hasOwnProperty.call(menu[day], 'desayuno') ?
@@ -459,7 +473,7 @@ const MainScreen = () => {
                         <Spacer>
                             <Text style={{ alignSelf: "center"}}>Desayuno</Text>
                         </Spacer>
-                        {stateItems ? 
+                        {stateItems !== undefined? 
                             <Carousel
                                 layout={"default"}
                                 firstItem={0}
@@ -482,7 +496,7 @@ const MainScreen = () => {
                         <Spacer>
                         <Text style={{ alignSelf: "center"}}>Almuerzo</Text>
                         </Spacer>
-                        {stateItems ? 
+                        {stateItems !== undefined ? 
                             <Carousel
                                 layout={"default"} 
                                 firstItem={0}
@@ -504,7 +518,7 @@ const MainScreen = () => {
                         <Spacer>
                         <Text style={{ alignSelf: "center"}}>Comida</Text>
                         </Spacer>
-                        {stateItems ? 
+                        {stateItems !== undefined ? 
                             <Carousel
                                 layout={"default"}                          
                                 firstItem={0}
@@ -526,7 +540,7 @@ const MainScreen = () => {
                         <Spacer>
                         <Text style={{ alignSelf: "center"}}>Merienda</Text>
                         </Spacer>
-                        {stateItems ? 
+                        { stateItems && Object.prototype.hasOwnProperty.call(stateItems, 'merienda') ? 
                             <Carousel
                                 layout={"default"}
                                 firstItem={0}
@@ -549,7 +563,7 @@ const MainScreen = () => {
                         <Spacer>
                         <Text style={{ alignSelf: "center"}}>Cena</Text>
                         </Spacer>
-                        {stateItems ? 
+                        {stateItems !== undefined ? 
                             <Carousel
                                 layout={"default"}
                                 firstItem={0}

@@ -14,6 +14,8 @@ const UserDataReducer = (state, action) => {
             return {}
         case 'put-goal':
             return {...state, goal: action.payload}
+        case 'update-user':
+            return action.payload;
         default:
             return state;
     }
@@ -34,12 +36,13 @@ const resetData = dispatch => () => {
 
 const updateUserData = dispatch => async (id, name, sex, birthDate) => {
     const response = await smartFeedApi.patch(`/userData/${id}`, {name, sex, birthDate});
-    alert('¡Cambios guardados! :)');
+    alert('Cambios guardados! :)');
 }
 
 const updateUserHealth = dispatch => async (id, weight, height, physicalActivity, isVegetarian, mealsQty) => {
     const response = await smartFeedApi.patch(`/userData/${id}`, {weight, height, physicalActivity, isVegetarian, mealsQty});
-    alert('¡Cambios guardados! :)');
+    dispatch({ type: 'update-user', payload: response.data.data})
+    alert('Cambios guardados! :)');
 }
 
 const putGoal = dispatch => async (id, goal) => {
