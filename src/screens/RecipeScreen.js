@@ -16,13 +16,12 @@ const RecipeScreen = ({ route }) => {
     const meal = route.params;
     const id = meal.result.id_meal;
     let wasntFound = false;
+    const photo = meal.result.meal_photo;
 
     //Imagenes
 
     const images = [
-        'https://cdn2.cocinadelirante.com/sites/default/files/images/2018/12/receta-facil-de-pollo-en-mole.jpg',
-        'https://dam.cocinafacil.com.mx/wp-content/uploads/2013/03/pollo-con-mole.jpg',
-        'https://imagesvc.meredithcorp.io/v3/mm/image?url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F21%2F2017%2F05%2F11%2Fpollo-en-mole-rojo-f-cil.jpg-2000.jpg&q=60'
+        photo,
     ]
 
     const [recipe, setRecipe] = useState('');

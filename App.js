@@ -75,6 +75,7 @@ function Root({route}) {
         headerStyle:{backgroundColor: '#EFCA66', },
         headerTitleAlign: "center",
         headerTitleStyle: {color: '#f0f1f2'},
+        drawerItemStyle: {height: 0},
         drawerIcon:config => <IonIcons name="book-sharp" size={30} color='#60656C'/>
       }}/>
 

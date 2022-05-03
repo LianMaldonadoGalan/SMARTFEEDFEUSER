@@ -5,7 +5,8 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 //Recibe {shoppingitem}
 
-const ShopItem = () =>{
+const ShopItem = ({ route }) =>{
+    
     return ( <View  style = {style.viewStyle}>
 
                 {/*<Image style = {style.imageStyle}source={ {uri: shoppingitem.image_url }}/>*/}
